@@ -21,6 +21,10 @@ const projectSchema = new Schema({
     type: Date,
     required: true,
   },
+  lastModifiedAt: {
+    type: Date,
+    required: true,
+  },
   windowList: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -30,9 +34,19 @@ const projectSchema = new Schema({
   assetList: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Window',
+      ref: 'AssetList',
     },
   ],
+  assetData: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'AssetData',
+    },
+  ],
+  assetLength: {
+    type: Number,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model('Project', projectSchema);
