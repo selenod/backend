@@ -9,14 +9,28 @@ const nodeSchema = new Schema({
       type: String,
       required: true,
     },
-    outputFlowConnection: PinData,
+    outputFlowConnection: {
+      id: {
+        type: String,
+        required: true,
+      },
+      pinType: Number,
+      name: String,
+    },
     inputConnections: [
       {
         name: {
           type: String,
           required: true,
         },
-        connection: PinData,
+        connection: {
+          id: {
+            type: String,
+            required: true,
+          },
+          pinType: Number,
+          name: String,
+        },
       },
     ],
     position: {
@@ -36,4 +50,4 @@ const nodeSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model('Node', nodeSchema);
+export default mongoose.model('Node', nodeSchema);

@@ -32,4 +32,4 @@ const windowSchema = new Schema({
   ],
 });
 
-module.exports = mongoose.model('Window', windowSchema);
+export default mongoose.model('Window', windowSchema);

@@ -61,4 +61,4 @@ const elementSchema = new Schema({
   isChecked: Boolean,
 });
 
-module.exports = mongoose.model('Element', elementSchema);
+export default mongoose.model('Element', elementSchema);

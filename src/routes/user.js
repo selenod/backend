@@ -1,12 +1,13 @@
 import axios from 'axios';
 import express from 'express';
 import { kakaoRestAPIKey } from '../config/config.js';
+import User from '../schema/user.js';
 
 const router = express.Router();
 
 router.get('/', (req, res) => {
   res.status(200).json({
-    message: 'Welcome to the User API',
+    message: 'Welcome to the User API.',
   });
 });
 
@@ -37,21 +38,59 @@ router.get('/auth', async (req, res) => {
             })
             .catch(() => {
               res.status(400).json({
-                message: 'Bad Request',
+                message: 'Bad Request.',
               });
             });
         })
         .catch(() => {
           res.status(400).json({
-            message: 'Bad Request',
+            message: 'Bad Request.',
           });
         });
       break;
     default:
       res.status(400).json({
-        message: 'Invalid platform',
+        message: 'Invalid platform.',
       });
       break;
+  }
+});
+
+// { username, uid }
+router.post('/create', async (req, res) => {
+  try {
+    if (!req.body.username || !req.body.uid) {
+      res.status(400).json({
+        message: 'Bad Request.',
+      });
+
+      return false;
+    }
+
+    if (
+      (await User.findOne({
+        username: req.body.username,
+      })) ||
+      (await User.findOne({
+        uid: req.body.uid,
+      }))
+    ) {
+      //User logged in.
+      res.status(200);
+      return true;
+    }
+
+    const user = await User.create({
+      username: req.body.username,
+      uid: req.body.uid,
+    });
+
+    // User created.
+    res.status(200);
+  } catch (error) {
+    res.status(400).json({
+      message: error,
+    });
   }
 });
 

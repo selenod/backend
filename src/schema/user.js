@@ -12,10 +12,6 @@ const userSchema = new Schema({
     required: true,
     unique: true,
   },
-  email: {
-    type: String,
-    required: true,
-  },
 });
 
-module.exports = mongoose.model('User', userSchema);
+export default mongoose.model('User', userSchema);
