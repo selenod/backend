@@ -76,17 +76,20 @@ router.post('/create', async (req, res) => {
       }))
     ) {
       //User logged in.
-      res.status(200);
-      return true;
+      res.status(200).json({
+        message: 'Successfully logged in.',
+      });
+    } else {
+      await User.create({
+        username: req.body.username,
+        uid: req.body.uid,
+      });
+
+      // User created.
+      res.status(200).json({
+        message: 'Successfully created.',
+      });
     }
-
-    const user = await User.create({
-      username: req.body.username,
-      uid: req.body.uid,
-    });
-
-    // User created.
-    res.status(200);
   } catch (error) {
     res.status(400).json({
       message: error,
