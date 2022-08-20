@@ -11,6 +11,7 @@ router.get('/', (req, res) => {
   });
 });
 
+// query: { platform, code }
 router.get('/auth', async (req, res) => {
   switch (req.query.platform) {
     case 'kakao':
@@ -56,43 +57,37 @@ router.get('/auth', async (req, res) => {
   }
 });
 
-// { username, uid }
-router.post('/create', async (req, res) => {
-  try {
-    if (!req.body.username || !req.body.uid) {
-      res.status(400).json({
-        message: 'Bad Request.',
-      });
-
-      return false;
-    }
-
-    if (
-      (await User.findOne({
-        username: req.body.username,
-      })) ||
-      (await User.findOne({
-        uid: req.body.uid,
-      }))
-    ) {
-      //User logged in.
-      res.status(200).json({
-        message: 'Successfully logged in.',
-      });
-    } else {
-      await User.create({
-        username: req.body.username,
-        uid: req.body.uid,
-      });
-
-      // User created.
-      res.status(200).json({
-        message: 'Successfully created.',
-      });
-    }
-  } catch (error) {
+// body: { username, uid }
+router.post('/login', async (req, res) => {
+  if (!req.body.username || !req.body.uid) {
     res.status(400).json({
-      message: error,
+      message: 'Bad Request.',
+    });
+
+    return;
+  }
+
+  if (
+    (await User.findOne({
+      username: req.body.username,
+    })) ||
+    (await User.findOne({
+      uid: req.body.uid,
+    }))
+  ) {
+    //User logged in.
+    res.status(200).json({
+      message: 'Successfully logged in.',
+    });
+  } else {
+    await User.create({
+      username: req.body.username,
+      uid: req.body.uid,
+    });
+
+    // User created.
+    res.status(200).json({
+      message: 'Successfully created.',
     });
   }
 });

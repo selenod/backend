@@ -7,21 +7,16 @@ const projectSchema = new Schema({
     type: String,
     required: true,
   },
-  id: {
-    type: Number,
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
-    unique: true,
-  },
-  description: String,
-  ownerUID: {
-    type: String,
-    required: true,
+    ref: 'User',
   },
   createAt: {
     type: Date,
     required: true,
   },
-  lastModifiedAt: {
+  modifiedAt: {
     type: Date,
     required: true,
   },
