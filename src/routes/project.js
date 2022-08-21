@@ -47,6 +47,45 @@ router.get('/list/:uid', async (req, res) => {
   });
 });
 
+// parameter : { uid, id }
+router.get('/:uid/:id', async (req, res) => {
+  if (!req.params.uid || !req.params.id) {
+    res.status(400).json({
+      message: 'Bad Request.',
+    });
+
+    return;
+  }
+
+  await User.findOne({
+    uid: req.params.uid,
+  }).exec((err, data) => {
+    if (err) {
+      res.status(400).json({
+        message: err,
+      });
+
+      return;
+    }
+
+    Project.findOne({ owner: data._id, _id: req.params.id }).exec(
+      (err, data) => {
+        if (err) {
+          res.status(400).json({
+            message: err,
+          });
+
+          return;
+        }
+
+        res.status(200).json({
+          project: data,
+        });
+      }
+    );
+  });
+});
+
 // body: { name, uid }
 router.post('/create', async (req, res) => {
   if (!req.body.name || !req.body.uid) {
