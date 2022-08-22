@@ -6,17 +6,20 @@ const windowSchema = new Schema({
   name: {
     type: String,
     required: true,
-    unique: true,
   },
   id: {
     type: Number,
     required: true,
-    unique: true,
   },
   windowData: {
-    width: Number,
-    height: Number,
-    resizable: Boolean,
+    width: {
+      type: Number,
+      required: true,
+    },
+    height: {
+      type: Number,
+      required: true,
+    },
   },
   nodeData: [
     {

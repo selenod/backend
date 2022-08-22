@@ -13,6 +13,14 @@ router.get('/', (req, res) => {
 
 // query: { platform, code }
 router.get('/auth', async (req, res) => {
+  if (!req.query.platform || !req.query.code) {
+    res.status(400).json({
+      message: 'Bad Request.',
+    });
+
+    return;
+  }
+
   switch (req.query.platform) {
     case 'kakao':
       await axios
@@ -32,6 +40,14 @@ router.get('/auth', async (req, res) => {
               },
             })
             .then((data) => {
+              if (!data.data) {
+                res.status(500).json({
+                  message: 'Failed to load user data.',
+                });
+
+                return;
+              }
+
               res.status(200).json({
                 id: data.data.id,
                 name: data.data.properties.nickname,
@@ -80,10 +96,21 @@ router.post('/login', async (req, res) => {
       message: 'Successfully logged in.',
     });
   } else {
-    await User.create({
-      username: req.body.username,
-      uid: req.body.uid,
-    });
+    await User.create(
+      {
+        username: req.body.username,
+        uid: req.body.uid,
+      },
+      (err) => {
+        if (err) {
+          res.status(500).json({
+            message: 'Failed to create user.',
+          });
+
+          return;
+        }
+      }
+    );
 
     // User created.
     res.status(200).json({
