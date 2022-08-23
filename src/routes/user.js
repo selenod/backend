@@ -2,6 +2,7 @@ import axios from 'axios';
 import express from 'express';
 import { kakaoRestAPIKey } from '../config/config.js';
 import User from '../schema/user.js';
+import Project from '../schema/project.js';
 
 const router = express.Router();
 
@@ -117,6 +118,43 @@ router.post('/login', async (req, res) => {
       message: 'Successfully created.',
     });
   }
+});
+
+// parameter : { uid }
+router.get('/projects/:uid', async (req, res) => {
+  if (!req.params.uid) {
+    res.status(400).json({
+      message: 'Bad Request.',
+    });
+
+    return;
+  }
+
+  await User.findOne({
+    uid: req.params.uid,
+  }).exec((err, data) => {
+    if (err || !data) {
+      res.status(500).json({
+        message: 'Failed to load user.',
+      });
+
+      return;
+    }
+
+    Project.find({ owner: data._id }).exec((err, data) => {
+      if (err || !data) {
+        res.status(500).json({
+          message: 'Fail to load project list.',
+        });
+
+        return;
+      }
+
+      res.status(200).json({
+        projectList: data,
+      });
+    });
+  });
 });
 
 export default router;

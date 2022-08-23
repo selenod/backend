@@ -11,43 +11,6 @@ router.get('/', (_, res) => {
   });
 });
 
-// parameter : { uid }
-router.get('/list/:uid', async (req, res) => {
-  if (!req.params.uid) {
-    res.status(400).json({
-      message: 'Bad Request.',
-    });
-
-    return;
-  }
-
-  await User.findOne({
-    uid: req.params.uid,
-  }).exec((err, data) => {
-    if (err || !data) {
-      res.status(500).json({
-        message: 'Failed to load user.',
-      });
-
-      return;
-    }
-
-    Project.find({ owner: data._id }).exec((err, data) => {
-      if (err || !data) {
-        res.status(500).json({
-          message: 'Fail to load project list.',
-        });
-
-        return;
-      }
-
-      res.status(200).json({
-        projectList: data,
-      });
-    });
-  });
-});
-
 // parameter : { uid, id }
 router.get('/:uid/:id', async (req, res) => {
   if (!req.params.uid || !req.params.id) {
@@ -87,8 +50,72 @@ router.get('/:uid/:id', async (req, res) => {
   });
 });
 
+// parameter : { uid, id }
+router.delete('/:uid/:id', async (req, res) => {
+  if (!req.params.uid || !req.params.id) {
+    res.status(400).json({
+      message: 'Bad Request.',
+    });
+
+    return;
+  }
+
+  await User.findOne({
+    uid: req.params.uid,
+  }).exec((err, data) => {
+    if (err || !data) {
+      res.status(500).json({
+        message: 'Fail to load user.',
+      });
+
+      return;
+    }
+
+    Project.findOne({ owner: data._id, _id: req.params.id })
+      .populate('windowList')
+      .exec((err, data) => {
+        if (err || !data) {
+          res.status(500).json({
+            message: 'Fail to load project.',
+          });
+
+          return;
+        }
+
+        if (data.windowList.length > 0) {
+          Window.deleteMany({ _id: { $in: data.windowList } }, (err) => {
+            if (err) {
+              res.status(500).json({
+                message: 'Fail to delete window.',
+              });
+
+              return;
+            }
+          });
+        }
+      });
+
+    Project.deleteOne({
+      owner: data._id,
+      _id: req.params.id,
+    }).exec((err) => {
+      if (err) {
+        res.status(500).json({
+          message: 'Fail to delete project.',
+        });
+
+        return;
+      }
+
+      res.status(200).json({
+        message: 'Successfully deleted.',
+      });
+    });
+  });
+});
+
 // body: { name, uid }
-router.post('/create', async (req, res) => {
+router.post('/', async (req, res) => {
   if (!req.body.name || !req.body.uid) {
     res.status(400).json({
       message: 'Bad Request.',
@@ -153,70 +180,6 @@ router.post('/create', async (req, res) => {
         );
       }
     );
-  });
-});
-
-// parameter : { uid, id }
-router.delete('/delete/:uid/:id', async (req, res) => {
-  if (!req.params.uid || !req.params.id) {
-    res.status(400).json({
-      message: 'Bad Request.',
-    });
-
-    return;
-  }
-
-  await User.findOne({
-    uid: req.params.uid,
-  }).exec((err, data) => {
-    if (err || !data) {
-      res.status(500).json({
-        message: 'Fail to load user.',
-      });
-
-      return;
-    }
-
-    Project.findOne({ owner: data._id, _id: req.params.id })
-      .populate('windowList')
-      .exec((err, data) => {
-        if (err || !data) {
-          res.status(500).json({
-            message: 'Fail to load project.',
-          });
-
-          return;
-        }
-
-        if (data.windowList.length > 0) {
-          Window.deleteMany({ _id: { $in: data.windowList } }, (err) => {
-            if (err) {
-              res.status(500).json({
-                message: 'Fail to delete window.',
-              });
-
-              return;
-            }
-          });
-        }
-      });
-
-    Project.deleteOne({
-      owner: data._id,
-      _id: req.params.id,
-    }).exec((err) => {
-      if (err) {
-        res.status(500).json({
-          message: 'Fail to delete project.',
-        });
-
-        return;
-      }
-
-      res.status(200).json({
-        message: 'Successfully deleted.',
-      });
-    });
   });
 });
 
