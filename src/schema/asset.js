@@ -16,23 +16,28 @@ const assetListSchema = new Schema({
   ],
 });
 
-const assetDataSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
+const assetDataSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    id: {
+      type: Number,
+      required: true,
+      unique: true,
+    },
+    type: {
+      type: String,
+      required: true,
+    },
+    contents: String,
+    extension: String,
   },
-  id: {
-    type: Number,
-    required: true,
-    unique: true,
-  },
-  type: {
-    type: String,
-    required: true,
-  },
-  contents: String,
-  extension: String,
-});
+  {
+    versionKey: false,
+  }
+);
 
 module.exports = mongoose.model('AssetList', assetListSchema);
 module.exports = mongoose.model('AssetData', assetDataSchema);
