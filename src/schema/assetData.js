@@ -2,20 +2,6 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-const assetListSchema = new Schema({
-  id: {
-    type: Number,
-    required: true,
-    unique: true,
-  },
-  contents: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'AssetList',
-    },
-  ],
-});
-
 const assetDataSchema = new Schema(
   {
     name: {
@@ -25,7 +11,6 @@ const assetDataSchema = new Schema(
     id: {
       type: Number,
       required: true,
-      unique: true,
     },
     type: {
       type: String,
@@ -39,5 +24,4 @@ const assetDataSchema = new Schema(
   }
 );
 
-module.exports = mongoose.model('AssetList', assetListSchema);
-module.exports = mongoose.model('AssetData', assetDataSchema);
+export default mongoose.model('AssetData', assetDataSchema);
