@@ -49,7 +49,6 @@ const elementSchema = new Schema(
 
     // Text
     text: String,
-    placeholder: String,
     fontSize: Number,
     color: String,
     backgroundColor: String,
