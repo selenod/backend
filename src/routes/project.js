@@ -898,11 +898,10 @@ router.post('/element', async (req, res) => {
                 borderRadius:
                   req.body.type === 'image' ||
                   req.body.type === 'video' ||
-                  req.body.type === 'checkbox' ||
                   req.body.type === 'sl-input' ||
                   req.body.type === 'ml-input'
                     ? '7'
-                    : req.body.type === 'button'
+                    : req.body.type === 'button' || req.body.type === 'checkbox'
                     ? '5'
                     : undefined,
                 borderColor:
