@@ -41,7 +41,6 @@ router.post('/', async (req, res) => {
           width: 1366,
           height: 768,
         },
-        nodeData: [],
         elementData: [],
       },
       (err, windowData) => {
@@ -271,7 +270,6 @@ router.post('/window', async (req, res) => {
               width: 1366,
               height: 768,
             },
-            nodeData: [],
             elementData: [],
           },
           (err, windowData) => {

@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-const nodeSchema = new Schema(
+const scriptSchema = new Schema(
   {
     type: Map,
     of: {
@@ -55,4 +55,4 @@ const nodeSchema = new Schema(
   }
 );
 
-export default mongoose.model('Node', nodeSchema);
+export default mongoose.model('Script', scriptSchema);

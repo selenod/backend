@@ -22,12 +22,10 @@ const windowSchema = new Schema(
         required: true,
       },
     },
-    nodeData: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Node',
-      },
-    ],
+    scriptData: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Script',
+    },
     elementData: [
       {
         type: mongoose.Schema.Types.ObjectId,
