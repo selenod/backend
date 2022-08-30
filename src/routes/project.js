@@ -5,6 +5,7 @@ import Window from '../schema/window.js';
 import AssetList from '../schema/assetList.js';
 import AssetData from '../schema/assetData.js';
 import Element from '../schema/element.js';
+import Script from '../schema/script.js';
 
 const router = express.Router();
 
@@ -33,48 +34,64 @@ router.post('/', async (req, res) => {
       return;
     }
 
-    Window.create(
+    Script.create(
       {
-        name: 'Default Window',
-        id: 0,
-        windowData: {
-          width: 1366,
-          height: 768,
-        },
-        elementData: [],
+        data: {},
       },
-      (err, windowData) => {
-        if (err || !windowData) {
+      (err, scriptData) => {
+        if (err || !scriptData) {
           res.status(500).json({
-            message: 'Fail to create window.',
+            message: 'Fail to create script.',
           });
 
           return;
         }
 
-        Project.create(
+        Window.create(
           {
-            name: req.body.name,
-            owner: data._id,
-            createAt: new Date(),
-            modifiedAt: new Date(),
-            windowList: [windowData._id],
-            assetList: [],
-            assetData: [],
-            assetLength: 0,
+            name: 'Default Window',
+            id: 0,
+            windowData: {
+              width: 1366,
+              height: 768,
+            },
+            scriptData: scriptData._id,
+            elementData: [],
           },
-          (err) => {
-            if (err) {
+          (err, windowData) => {
+            if (err || !windowData) {
               res.status(500).json({
-                message: 'Fail to create project.',
+                message: 'Fail to create window.',
               });
 
               return;
             }
 
-            res.status(200).json({
-              message: 'Successfully created.',
-            });
+            Project.create(
+              {
+                name: req.body.name,
+                owner: data._id,
+                createAt: new Date(),
+                modifiedAt: new Date(),
+                windowList: [windowData._id],
+                assetList: [],
+                assetData: [],
+                assetLength: 0,
+              },
+              (err) => {
+                if (err) {
+                  res.status(500).json({
+                    message: 'Fail to create project.',
+                  });
+
+                  return;
+                }
+
+                res.status(200).json({
+                  message: 'Successfully created.',
+                });
+              }
+            );
           }
         );
       }
@@ -108,6 +125,7 @@ router.get('/:uid/:id', async (req, res) => {
         path: 'windowList',
         populate: {
           path: 'elementData',
+          path: 'scriptData',
         },
       })
       .populate('assetList')
@@ -167,6 +185,16 @@ router.delete('/:uid/:id', async (req, res) => {
             if (err) {
               res.status(500).json({
                 message: 'Fail to delete element.',
+              });
+
+              return;
+            }
+          });
+
+          await Script.deleteOne({ _id: window.scriptData }).exec((err) => {
+            if (err) {
+              res.status(500).json({
+                message: 'Fail to delete script.',
               });
 
               return;
@@ -1056,7 +1084,7 @@ router.put('/element', async (req, res) => {
   });
 });
 
-// body: { uid, id, windowId, index }
+// body : { uid, id, windowId, index }
 router.delete('/element/:uid/:id/:windowId/:index', async (req, res) => {
   if (
     req.params.uid === undefined ||
@@ -1151,6 +1179,98 @@ router.delete('/element/:uid/:id/:windowId/:index', async (req, res) => {
 
               res.status(200).json({
                 message: 'Successfully deleted.',
+              });
+            });
+          });
+        });
+      });
+  });
+});
+
+// body : { uid, id, windowId, scriptData }
+router.put('/script', async (req, res) => {
+  if (
+    req.body.uid === undefined ||
+    req.body.id === undefined ||
+    req.body.windowId === undefined ||
+    req.body.scriptData === undefined
+  ) {
+    res.status(400).json({
+      message: 'Bad Request.',
+    });
+
+    return;
+  }
+
+  await User.findOne({
+    uid: req.body.uid,
+  }).exec((err, data) => {
+    if (err || !data) {
+      res.status(500).json({
+        message: 'Fail to load user.',
+      });
+
+      return;
+    }
+
+    Project.findOne({ owner: data._id, _id: req.body.id })
+      .populate('windowList')
+      .exec((err, data) => {
+        if (err || !data) {
+          res.status(500).json({
+            message: 'Fail to load project.',
+          });
+
+          return;
+        }
+
+        Window.findOne({
+          _id: { $in: data.windowList },
+          id: req.body.windowId,
+        }).exec((err, data) => {
+          if (err || !data || !data.scriptData) {
+            res.status(500).json({
+              message: 'Fail to load window.',
+            });
+
+            return;
+          }
+
+          Script.updateOne(
+            {
+              _id: data.scriptData,
+            },
+            {
+              data: req.body.scriptData,
+            }
+          ).exec((err) => {
+            if (err) {
+              console.log(req.body.scriptData);
+              res.status(500).json({
+                message: 'Fail to update script.',
+              });
+
+              return;
+            }
+
+            Project.updateOne(
+              {
+                _id: req.params.id,
+              },
+              {
+                modifiedAt: new Date(),
+              }
+            ).exec((err) => {
+              if (err) {
+                res.status(500).json({
+                  message: 'Fail to update project.',
+                });
+
+                return;
+              }
+
+              res.status(200).json({
+                message: 'Successfully updated.',
               });
             });
           });
