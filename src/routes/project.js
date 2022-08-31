@@ -27,8 +27,8 @@ router.post('/', async (req, res) => {
 
   await User.findOne({ uid: req.body.uid }).exec((err, data) => {
     if (err || !data) {
-      res.status(404).json({
-        message: 'User not found.',
+      res.status(500).json({
+        message: 'Fail to load user.',
       });
 
       return;
@@ -121,13 +121,22 @@ router.get('/:uid/:id', async (req, res) => {
     }
 
     Project.findOne({ owner: data._id, _id: req.params.id })
-      .populate({
-        path: 'windowList',
-        populate: {
-          path: 'elementData',
-          path: 'scriptData',
+      .populate([
+        {
+          path: 'windowList',
+          populate: {
+            path: 'elementData',
+            model: 'Element',
+          },
         },
-      })
+        {
+          path: 'windowList',
+          populate: {
+            path: 'scriptData',
+            model: 'Script',
+          },
+        },
+      ])
       .populate('assetList')
       .populate('assetData')
       .exec((err, data) => {
@@ -290,44 +299,59 @@ router.post('/window', async (req, res) => {
           return;
         }
 
-        Window.create(
+        Script.create(
           {
-            name: req.body.name,
-            id: data.windowList[data.windowList.length - 1].id + 1,
-            windowData: {
-              width: 1366,
-              height: 768,
-            },
-            elementData: [],
+            data: {},
           },
-          (err, windowData) => {
-            if (err || !windowData) {
+          (err, scriptData) => {
+            if (err || !scriptData) {
               res.status(500).json({
-                message: 'Fail to create window.',
+                message: 'Fail to create script.',
               });
 
               return;
             }
-
-            Project.updateOne(
-              { _id: req.body.id },
+            Window.create(
               {
-                windowList: [...data.windowList, windowData._id],
-                modifiedAt: new Date(),
-              }
-            ).exec((err) => {
-              if (err) {
-                res.status(500).json({
-                  message: 'Fail to update project.',
+                name: req.body.name,
+                id: data.windowList[data.windowList.length - 1].id + 1,
+                windowData: {
+                  width: 1366,
+                  height: 768,
+                },
+                scriptData: scriptData._id,
+                elementData: [],
+              },
+              (err, windowData) => {
+                if (err || !windowData) {
+                  res.status(500).json({
+                    message: 'Fail to create window.',
+                  });
+
+                  return;
+                }
+
+                Project.updateOne(
+                  { _id: req.body.id },
+                  {
+                    windowList: [...data.windowList, windowData._id],
+                    modifiedAt: new Date(),
+                  }
+                ).exec((err) => {
+                  if (err) {
+                    res.status(500).json({
+                      message: 'Fail to update project.',
+                    });
+
+                    return;
+                  }
                 });
 
-                return;
+                res.status(200).json({
+                  message: 'Successfully created.',
+                });
               }
-            });
-
-            res.status(200).json({
-              message: 'Successfully created.',
-            });
+            );
           }
         );
       });
@@ -453,6 +477,36 @@ router.delete('/window/:uid/:id/:_id', async (req, res) => {
 
           return;
         }
+
+        Element.deleteMany({
+          _id: {
+            $in: data.windowList.find(
+              (window) => String(window._id) === String(req.params._id)
+            ).elementData,
+          },
+        }).exec((err) => {
+          if (err) {
+            res.status(500).json({
+              message: 'Fail to delete element.',
+            });
+
+            return;
+          }
+        });
+
+        Script.deleteOne({
+          _id: data.windowList.find(
+            (window) => String(window._id) === String(req.params._id)
+          ).scriptData,
+        }).exec((err) => {
+          if (err) {
+            res.status(500).json({
+              message: 'Fail to delete script.',
+            });
+
+            return;
+          }
+        });
 
         Window.deleteOne({ _id: req.params._id }, (err) => {
           if (err) {
