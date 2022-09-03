@@ -3,6 +3,8 @@ import express from 'express';
 import { kakaoRestAPIKey } from '../config/config.js';
 import User from '../schema/user.js';
 import Project from '../schema/project.js';
+import jwt from 'jsonwebtoken';
+import { secretKey } from '../config/config.js';
 
 const router = express.Router();
 
@@ -92,15 +94,41 @@ router.post('/login', async (req, res) => {
       uid: req.body.uid,
     }))
   ) {
-    //User logged in.
-    res.status(200).json({
-      message: 'Successfully logged in.',
+    await User.findOne({
+      username: req.body.username,
+      uid: req.body.uid,
+    }).exec((err, data) => {
+      if (err || !data) {
+        res.status(500).json({
+          message: 'Failed to load user.',
+        });
+
+        return;
+      }
+
+      //User logged in.
+      res.status(200).json({
+        message: 'Successfully logged in.',
+        token: data.token,
+      });
     });
   } else {
+    const accessToken = jwt.sign(
+      {
+        uid: req.body.uid,
+      },
+      secretKey,
+      {
+        subject: 'Selenod JWT',
+        issuer: 'Selenod',
+      }
+    );
+
     await User.create(
       {
         username: req.body.username,
         uid: req.body.uid,
+        token: accessToken,
       },
       (err) => {
         if (err) {
@@ -116,11 +144,12 @@ router.post('/login', async (req, res) => {
     // User created.
     res.status(200).json({
       message: 'Successfully created.',
+      token: accessToken,
     });
   }
 });
 
-// parameter : { uid }
+// parameter: { uid }
 router.get('/projects/:uid', async (req, res) => {
   if (!req.params.uid) {
     res.status(400).json({
@@ -153,6 +182,34 @@ router.get('/projects/:uid', async (req, res) => {
       res.status(200).json({
         projectList: data,
       });
+    });
+  });
+});
+
+// parameter: { token }
+router.get('/:token', async (req, res) => {
+  if (req.params.token === undefined) {
+    res.status(400).json({
+      message: 'Bad Request.',
+    });
+
+    return;
+  }
+
+  await User.findOne({
+    token: req.params.token,
+  }).exec((err, data) => {
+    if (err || !data) {
+      res.status(500).json({
+        message: 'Failed to load user data.',
+      });
+
+      return;
+    }
+
+    res.status(200).json({
+      uid: data.uid,
+      username: data.username,
     });
   });
 });

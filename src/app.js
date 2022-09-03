@@ -4,10 +4,16 @@ import cors from 'cors';
 import { dburl } from './config/config.js';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // express.js Init
 const app = express();
+
 // express.js settings
+app.use(express.static(__dirname + '/public'));
 app.use(cookieParser());
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
@@ -34,13 +40,13 @@ db.once('open', () => {
 
 mongoose.connect(dburl);
 
-app.get('*', (req, res) => {
+app.get('*', (_, res) => {
   res.status(404).json({
     status: 404,
     message: 'Not Found',
   });
 });
 
-app.listen(3001, () => {
-  console.log('Server is running at port 3001');
+app.listen(process.env.PORT || 8080, () => {
+  console.log('Server is running at port 8080');
 });
