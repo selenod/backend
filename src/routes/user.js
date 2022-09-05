@@ -76,9 +76,9 @@ router.get('/auth', async (req, res) => {
   }
 });
 
-// body: { username, uid }
+// body: { username, uid, translate }
 router.post('/login', async (req, res) => {
-  if (!req.body.username || !req.body.uid) {
+  if (!req.body.username || !req.body.uid || !req.body.translate) {
     res.status(400).json({
       message: 'Bad Request.',
     });
@@ -129,6 +129,7 @@ router.post('/login', async (req, res) => {
         username: req.body.username,
         uid: req.body.uid,
         token: accessToken,
+        translate: req.body.translate,
       },
       (err) => {
         if (err) {
@@ -210,6 +211,39 @@ router.get('/:token', async (req, res) => {
     res.status(200).json({
       uid: data.uid,
       username: data.username,
+      translate: data.translate,
+    });
+  });
+});
+
+// body: { token, translate }
+router.put('/', async (req, res) => {
+  if (!req.body.token || !req.body.translate) {
+    res.status(400).json({
+      message: 'Bad Request.',
+    });
+
+    return;
+  }
+
+  await User.updateOne(
+    {
+      token: req.body.token,
+    },
+    {
+      translate: req.body.translate,
+    }
+  ).exec((err) => {
+    if (err) {
+      res.status(500).json({
+        message: 'Failed to update user.',
+      });
+
+      return;
+    }
+
+    res.status(200).json({
+      message: 'Successfully updated.',
     });
   });
 });

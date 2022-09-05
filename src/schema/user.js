@@ -18,6 +18,10 @@ const userSchema = new Schema(
       required: true,
       unique: true,
     },
+    translate: {
+      type: String,
+      required: true,
+    },
   },
   {
     versionKey: false,
