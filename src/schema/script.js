@@ -10,13 +10,6 @@ const scriptSchema = new Schema(
         nodeId: {
           type: String,
         },
-        outputFlowConnection: {
-          id: {
-            type: String,
-          },
-          pinType: Number,
-          name: String,
-        },
         inputConnections: [
           {
             name: {
