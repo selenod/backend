@@ -7,6 +7,8 @@ import AssetData from '../schema/assetData.js';
 import Element from '../schema/element.js';
 import Script from '../schema/script.js';
 
+import { __dirname } from '../app.js';
+
 const router = express.Router();
 
 router.get('/', (_, res) => {
@@ -18,20 +20,16 @@ router.get('/', (_, res) => {
 // body: { name, uid }
 router.post('/', async (req, res) => {
   if (req.body.name === undefined || req.body.uid === undefined) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Bad Request.',
     });
-
-    return;
   }
 
   await User.findOne({ uid: req.body.uid }).exec((err, data) => {
     if (err || !data) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Fail to load user.',
       });
-
-      return;
     }
 
     Script.create(
@@ -40,11 +38,9 @@ router.post('/', async (req, res) => {
       },
       (err, scriptData) => {
         if (err || !scriptData) {
-          res.status(500).json({
+          return res.status(500).json({
             message: 'Fail to create script.',
           });
-
-          return;
         }
 
         Window.create(
@@ -60,11 +56,9 @@ router.post('/', async (req, res) => {
           },
           (err, windowData) => {
             if (err || !windowData) {
-              res.status(500).json({
+              return res.status(500).json({
                 message: 'Fail to create window.',
               });
-
-              return;
             }
 
             Project.create(
@@ -80,11 +74,9 @@ router.post('/', async (req, res) => {
               },
               (err) => {
                 if (err) {
-                  res.status(500).json({
+                  return res.status(500).json({
                     message: 'Fail to create project.',
                   });
-
-                  return;
                 }
 
                 res.status(200).json({
@@ -102,22 +94,18 @@ router.post('/', async (req, res) => {
 // parameter : { uid, id }
 router.get('/:uid/:id', async (req, res) => {
   if (req.params.uid === undefined || req.params.id === undefined) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Bad Request.',
     });
-
-    return;
   }
 
   await User.findOne({
     uid: req.params.uid,
   }).exec((err, data) => {
     if (err || !data) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Fail to load user.',
       });
-
-      return;
     }
 
     Project.findOne({ owner: data._id, _id: req.params.id })
@@ -141,11 +129,9 @@ router.get('/:uid/:id', async (req, res) => {
       .populate('assetData')
       .exec((err, data) => {
         if (err || !data) {
-          res.status(500).json({
+          return res.status(500).json({
             message: 'Fail to load project.',
           });
-
-          return;
         }
 
         res.status(200).json({
@@ -158,33 +144,27 @@ router.get('/:uid/:id', async (req, res) => {
 // parameter : { uid, id }
 router.delete('/:uid/:id', async (req, res) => {
   if (req.params.uid === undefined || req.params.id === undefined) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Bad Request.',
     });
-
-    return;
   }
 
   await User.findOne({
     uid: req.params.uid,
   }).exec((err, data) => {
     if (err || !data) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Fail to load user.',
       });
-
-      return;
     }
 
     Project.findOne({ owner: data._id, _id: req.params.id })
       .populate('windowList')
       .exec((err, data) => {
         if (err || !data || data.windowList.length === 0) {
-          res.status(500).json({
+          return res.status(500).json({
             message: 'Fail to load project.',
           });
-
-          return;
         }
 
         data.windowList.forEach(async (window) => {
@@ -192,21 +172,17 @@ router.delete('/:uid/:id', async (req, res) => {
             _id: { $in: window.elementData },
           }).exec((err) => {
             if (err) {
-              res.status(500).json({
+              return res.status(500).json({
                 message: 'Fail to delete element.',
               });
-
-              return;
             }
           });
 
           await Script.deleteOne({ _id: window.scriptData }).exec((err) => {
             if (err) {
-              res.status(500).json({
+              return res.status(500).json({
                 message: 'Fail to delete script.',
               });
-
-              return;
             }
           });
         });
@@ -217,20 +193,16 @@ router.delete('/:uid/:id', async (req, res) => {
           { _id: { $in: data.windowList } },
           (err, windowData) => {
             if (err) {
-              res.status(500).json({
+              return res.status(500).json({
                 message: 'Fail to delete window.',
               });
-
-              return;
             }
 
             AssetList.deleteMany({ _id: { $in: data.assetList } }, (err) => {
               if (err) {
-                res.status(500).json({
+                return res.status(500).json({
                   message: 'Fail to delete asset list.',
                 });
-
-                return;
               }
 
               AssetData.deleteMany({ _id: { $in: data.assetData } }, (err) => {
@@ -244,11 +216,9 @@ router.delete('/:uid/:id', async (req, res) => {
                   _id: req.params.id,
                 }).exec((err) => {
                   if (err) {
-                    res.status(500).json({
+                    return res.status(500).json({
                       message: 'Fail to delete project.',
                     });
-
-                    return;
                   }
 
                   res.status(200).json({
@@ -270,33 +240,27 @@ router.post('/window', async (req, res) => {
     req.body.id === undefined ||
     req.body.name === undefined
   ) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Bad Request.',
     });
-
-    return;
   }
 
   await User.findOne({
     uid: req.body.uid,
   }).exec((err, data) => {
     if (err || !data) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Fail to load user.',
       });
-
-      return;
     }
 
     Project.findOne({ owner: data._id, _id: req.body.id })
       .populate('windowList')
       .exec((err, data) => {
         if (err || !data) {
-          res.status(500).json({
+          return res.status(500).json({
             message: 'Fail to load project.',
           });
-
-          return;
         }
 
         Script.create(
@@ -305,11 +269,9 @@ router.post('/window', async (req, res) => {
           },
           (err, scriptData) => {
             if (err || !scriptData) {
-              res.status(500).json({
+              return res.status(500).json({
                 message: 'Fail to create script.',
               });
-
-              return;
             }
             Window.create(
               {
@@ -324,11 +286,9 @@ router.post('/window', async (req, res) => {
               },
               (err, windowData) => {
                 if (err || !windowData) {
-                  res.status(500).json({
+                  return res.status(500).json({
                     message: 'Fail to create window.',
                   });
-
-                  return;
                 }
 
                 Project.updateOne(
@@ -339,11 +299,9 @@ router.post('/window', async (req, res) => {
                   }
                 ).exec((err) => {
                   if (err) {
-                    res.status(500).json({
+                    return res.status(500).json({
                       message: 'Fail to update project.',
                     });
-
-                    return;
                   }
                 });
 
@@ -367,33 +325,27 @@ router.put('/window', async (req, res) => {
     req.body.name === undefined ||
     req.body.windowData === undefined
   ) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Bad Request.',
     });
-
-    return;
   }
 
   await User.findOne({
     uid: req.body.uid,
   }).exec((err, data) => {
     if (err || !data) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Fail to load user.',
       });
-
-      return;
     }
 
     Project.findOne({ owner: data._id, _id: req.body.id })
       .populate('windowList')
       .exec((err, data) => {
         if (err || !data) {
-          res.status(500).json({
+          return res.status(500).json({
             message: 'Fail to load project.',
           });
-
-          return;
         }
 
         Window.updateOne(
@@ -404,11 +356,9 @@ router.put('/window', async (req, res) => {
           }
         ).exec((err) => {
           if (err) {
-            res.status(500).json({
+            return res.status(500).json({
               message: 'Fail to update window.',
             });
-
-            return;
           }
 
           Project.updateOne(
@@ -418,11 +368,9 @@ router.put('/window', async (req, res) => {
             }
           ).exec((err) => {
             if (err) {
-              res.status(500).json({
+              return res.status(500).json({
                 message: 'Fail to update project.',
               });
-
-              return;
             }
 
             res.status(200).json({
@@ -441,41 +389,33 @@ router.delete('/window/:uid/:id/:_id', async (req, res) => {
     req.params.id === undefined ||
     req.params._id === undefined
   ) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Bad Request.',
     });
-
-    return;
   }
 
   await User.findOne({
     uid: req.params.uid,
   }).exec((err, data) => {
     if (err || !data) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Fail to load user.',
       });
-
-      return;
     }
 
     Project.findOne({ owner: data._id, _id: req.params.id })
       .populate('windowList')
       .exec((err, data) => {
         if (err || !data) {
-          res.status(500).json({
+          return res.status(500).json({
             message: 'Fail to load project.',
           });
-
-          return;
         }
 
         if (data.windowList.length <= 1) {
-          res.status(405).json({
+          return res.status(405).json({
             message: 'Fail to delete window.',
           });
-
-          return;
         }
 
         Element.deleteMany({
@@ -486,11 +426,9 @@ router.delete('/window/:uid/:id/:_id', async (req, res) => {
           },
         }).exec((err) => {
           if (err) {
-            res.status(500).json({
+            return res.status(500).json({
               message: 'Fail to delete element.',
             });
-
-            return;
           }
         });
 
@@ -500,21 +438,17 @@ router.delete('/window/:uid/:id/:_id', async (req, res) => {
           ).scriptData,
         }).exec((err) => {
           if (err) {
-            res.status(500).json({
+            return res.status(500).json({
               message: 'Fail to delete script.',
             });
-
-            return;
           }
         });
 
         Window.deleteOne({ _id: req.params._id }, (err) => {
           if (err) {
-            res.status(500).json({
+            return res.status(500).json({
               message: 'Fail to delete window.',
             });
-
-            return;
           }
 
           Project.updateOne(
@@ -527,11 +461,9 @@ router.delete('/window/:uid/:id/:_id', async (req, res) => {
             }
           ).exec((err) => {
             if (err) {
-              res.status(500).json({
+              return res.status(500).json({
                 message: 'Fail to update project.',
               });
-
-              return;
             }
 
             res.status(200).json({
@@ -551,31 +483,25 @@ router.post('/asset', async (req, res) => {
     req.body.name === undefined ||
     req.body.type === undefined
   ) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Bad Request.',
     });
-
-    return;
   }
 
   await User.findOne({ uid: req.body.uid }).exec((err, data) => {
     if (err || !data) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Fail to load user.',
       });
-
-      return;
     }
 
     Project.findOne({ owner: data._id, _id: req.body.id })
       .populate('assetList')
       .exec((err, data) => {
         if (err || !data) {
-          res.status(500).json({
+          return res.status(500).json({
             message: 'Fail to load project.',
           });
-
-          return;
         }
 
         AssetList.create(
@@ -587,11 +513,9 @@ router.post('/asset', async (req, res) => {
           },
           (err, assetListData) => {
             if (err) {
-              res.status(500).json({
+              return res.status(500).json({
                 message: 'Fail to create asset list.',
               });
-
-              return;
             }
 
             AssetData.create(
@@ -604,11 +528,9 @@ router.post('/asset', async (req, res) => {
               },
               (err, assetData) => {
                 if (err) {
-                  res.status(500).json({
+                  return res.status(500).json({
                     message: 'Fail to create asset data.',
                   });
-
-                  return;
                 }
 
                 Project.updateOne(
@@ -623,11 +545,9 @@ router.post('/asset', async (req, res) => {
                   }
                 ).exec((err) => {
                   if (err) {
-                    res.status(500).json({
+                    return res.status(500).json({
                       message: 'Fail to update project.',
                     });
-
-                    return;
                   }
 
                   res.status(200).json({
@@ -651,31 +571,25 @@ router.put('/asset', async (req, res) => {
     req.body.name === undefined ||
     req.body.extension === undefined
   ) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Bad Request.',
     });
-
-    return;
   }
 
   await User.findOne({
     uid: req.body.uid,
   }).exec((err, data) => {
     if (err || !data) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Fail to load user.',
       });
-
-      return;
     }
 
     Project.findOne({ owner: data._id, _id: req.body.id }).exec((err, data) => {
       if (err || !data) {
-        res.status(500).json({
+        return res.status(500).json({
           message: 'Fail to load project.',
         });
-
-        return;
       }
 
       AssetData.updateOne(
@@ -689,11 +603,9 @@ router.put('/asset', async (req, res) => {
         }
       ).exec((err) => {
         if (err) {
-          res.status(500).json({
+          return res.status(500).json({
             message: 'Fail to update asset data.',
           });
-
-          return;
         }
 
         Project.updateOne(
@@ -703,11 +615,9 @@ router.put('/asset', async (req, res) => {
           }
         ).exec((err) => {
           if (err) {
-            res.status(500).json({
+            return res.status(500).json({
               message: 'Fail to update project.',
             });
-
-            return;
           }
 
           res.status(200).json({
@@ -726,32 +636,26 @@ router.delete('/asset/:uid/:id/:index', async (req, res) => {
     req.params.id === undefined ||
     req.params.index === undefined
   ) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Bad Request.',
     });
-
-    return;
   }
 
   await User.findOne({
     uid: req.params.uid,
   }).exec((err, data) => {
     if (err || !data) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Fail to load user.',
       });
-
-      return;
     }
 
     Project.findOne({ owner: data._id, _id: req.params.id }).exec(
       (err, data) => {
         if (err || !data) {
-          res.status(500).json({
+          return res.status(500).json({
             message: 'Fail to load project.',
           });
-
-          return;
         }
 
         AssetList.findOne({
@@ -759,11 +663,9 @@ router.delete('/asset/:uid/:id/:index', async (req, res) => {
           id: req.params.index,
         }).exec((err, assetListData) => {
           if (err || !assetListData) {
-            res.status(500).json({
+            return res.status(500).json({
               message: 'Fail to load asset list.',
             });
-
-            return;
           }
 
           AssetData.findOne({
@@ -771,33 +673,27 @@ router.delete('/asset/:uid/:id/:index', async (req, res) => {
             id: req.params.index,
           }).exec((err, assetData) => {
             if (err || !assetData) {
-              res.status(500).json({
+              return res.status(500).json({
                 message: 'Fail to load asset data.',
               });
-
-              return;
             }
 
             AssetList.deleteOne({
               _id: assetListData._id,
             }).exec((err) => {
               if (err) {
-                res.status(500).json({
+                return res.status(500).json({
                   message: 'Fail to delete asset list.',
                 });
-
-                return;
               }
 
               AssetData.deleteOne({
                 _id: assetData._id,
               }).exec((err) => {
                 if (err) {
-                  res.status(500).json({
+                  return res.status(500).json({
                     message: 'Fail to delete asset data.',
                   });
-
-                  return;
                 }
 
                 Project.updateOne(
@@ -821,11 +717,9 @@ router.delete('/asset/:uid/:id/:index', async (req, res) => {
                   }
                 ).exec((err) => {
                   if (err) {
-                    res.status(500).json({
+                    return res.status(500).json({
                       message: 'Fail to update project.',
                     });
-
-                    return;
                   }
 
                   res.status(200).json({
@@ -850,22 +744,18 @@ router.post('/element', async (req, res) => {
     req.body.name === undefined ||
     req.body.type === undefined
   ) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Bad Request.',
     });
-
-    return;
   }
 
   await User.findOne({
     uid: req.body.uid,
   }).exec((err, data) => {
     if (err || !data) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Fail to load user.',
       });
-
-      return;
     }
 
     Project.findOne({
@@ -875,11 +765,9 @@ router.post('/element', async (req, res) => {
       .populate('windowList')
       .exec((err, data) => {
         if (err || !data) {
-          res.status(500).json({
+          return res.status(500).json({
             message: 'Fail to load project.',
           });
-
-          return;
         }
 
         Window.findOne({
@@ -895,11 +783,9 @@ router.post('/element', async (req, res) => {
           )
           .exec((err, data) => {
             if (err || !data) {
-              res.status(500).json({
+              return res.status(500).json({
                 message: 'Fail to load window.',
               });
-
-              return;
             }
 
             Element.create(
@@ -996,11 +882,9 @@ router.post('/element', async (req, res) => {
               },
               (err, elementData) => {
                 if (err || !elementData) {
-                  res.status(500).json({
+                  return res.status(500).json({
                     message: 'Fail to create element.',
                   });
-
-                  return;
                 }
 
                 Window.updateOne(
@@ -1012,11 +896,9 @@ router.post('/element', async (req, res) => {
                   }
                 ).exec((err) => {
                   if (err) {
-                    res.status(500).json({
+                    return res.status(500).json({
                       message: 'Fail to update window.',
                     });
-
-                    return;
                   }
 
                   Project.updateOne(
@@ -1028,11 +910,9 @@ router.post('/element', async (req, res) => {
                     }
                   ).exec((err) => {
                     if (err) {
-                      res.status(500).json({
+                      return res.status(500).json({
                         message: 'Fail to update project.',
                       });
-
-                      return;
                     }
 
                     res.status(200).json({
@@ -1056,33 +936,27 @@ router.put('/element', async (req, res) => {
     req.body.index === undefined ||
     req.body.prop === undefined
   ) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Bad Request.',
     });
-
-    return;
   }
 
   await User.findOne({
     uid: req.body.uid,
   }).exec((err, data) => {
     if (err || !data) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Fail to load user.',
       });
-
-      return;
     }
 
     Project.findOne({ owner: data._id, _id: req.body.id })
       .populate('windowList')
       .exec((err, data) => {
         if (err || !data) {
-          res.status(500).json({
+          return res.status(500).json({
             message: 'Fail to load project.',
           });
-
-          return;
         }
 
         Window.findOne({
@@ -1090,11 +964,9 @@ router.put('/element', async (req, res) => {
           id: req.body.windowId,
         }).exec((err, data) => {
           if (err || !data) {
-            res.status(500).json({
+            return res.status(500).json({
               message: 'Fail to load window.',
             });
-
-            return;
           }
 
           Element.updateOne(
@@ -1107,11 +979,9 @@ router.put('/element', async (req, res) => {
             }
           ).exec((err) => {
             if (err) {
-              res.status(500).json({
+              return res.status(500).json({
                 message: 'Fail to update element.',
               });
-
-              return;
             }
 
             Project.updateOne(
@@ -1121,11 +991,9 @@ router.put('/element', async (req, res) => {
               }
             ).exec((err) => {
               if (err) {
-                res.status(500).json({
+                return res.status(500).json({
                   message: 'Fail to update project.',
                 });
-
-                return;
               }
 
               res.status(200).json({
@@ -1138,7 +1006,7 @@ router.put('/element', async (req, res) => {
   });
 });
 
-// body : { uid, id, windowId, index }
+// parameter : { uid, id, windowId, index }
 router.delete('/element/:uid/:id/:windowId/:index', async (req, res) => {
   if (
     req.params.uid === undefined ||
@@ -1146,33 +1014,27 @@ router.delete('/element/:uid/:id/:windowId/:index', async (req, res) => {
     req.params.windowId === undefined ||
     req.params.index === undefined
   ) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Bad Request.',
     });
-
-    return;
   }
 
   await User.findOne({
     uid: req.params.uid,
   }).exec((err, data) => {
     if (err || !data) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Fail to load user.',
       });
-
-      return;
     }
 
     Project.findOne({ owner: data._id, _id: req.params.id })
       .populate('windowList')
       .exec((err, data) => {
         if (err || !data) {
-          res.status(500).json({
+          return res.status(500).json({
             message: 'Fail to load project.',
           });
-
-          return;
         }
 
         Element.deleteOne({
@@ -1184,11 +1046,9 @@ router.delete('/element/:uid/:id/:windowId/:index', async (req, res) => {
           id: req.params.index,
         }).exec((err) => {
           if (err) {
-            res.status(500).json({
+            return res.status(500).json({
               message: 'Fail to delete element.',
             });
-
-            return;
           }
 
           Window.updateOne(
@@ -1208,11 +1068,9 @@ router.delete('/element/:uid/:id/:windowId/:index', async (req, res) => {
             }
           ).exec((err) => {
             if (err) {
-              res.status(500).json({
+              return res.status(500).json({
                 message: 'Fail to update window.',
               });
-
-              return;
             }
 
             Project.updateOne(
@@ -1224,11 +1082,9 @@ router.delete('/element/:uid/:id/:windowId/:index', async (req, res) => {
               }
             ).exec((err) => {
               if (err) {
-                res.status(500).json({
+                return res.status(500).json({
                   message: 'Fail to update project.',
                 });
-
-                return;
               }
 
               res.status(200).json({
@@ -1249,33 +1105,27 @@ router.put('/script', async (req, res) => {
     req.body.windowId === undefined ||
     req.body.scriptData === undefined
   ) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Bad Request.',
     });
-
-    return;
   }
 
   await User.findOne({
     uid: req.body.uid,
   }).exec((err, data) => {
     if (err || !data) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Fail to load user.',
       });
-
-      return;
     }
 
     Project.findOne({ owner: data._id, _id: req.body.id })
       .populate('windowList')
       .exec((err, data) => {
         if (err || !data) {
-          res.status(500).json({
+          return res.status(500).json({
             message: 'Fail to load project.',
           });
-
-          return;
         }
 
         Window.findOne({
@@ -1283,11 +1133,9 @@ router.put('/script', async (req, res) => {
           id: req.body.windowId,
         }).exec((err, data) => {
           if (err || !data || !data.scriptData) {
-            res.status(500).json({
+            return res.status(500).json({
               message: 'Fail to load window.',
             });
-
-            return;
           }
 
           Script.updateOne(
@@ -1299,12 +1147,9 @@ router.put('/script', async (req, res) => {
             }
           ).exec((err) => {
             if (err) {
-              console.log(req.body.scriptData);
-              res.status(500).json({
+              return res.status(500).json({
                 message: 'Fail to update script.',
               });
-
-              return;
             }
 
             Project.updateOne(
@@ -1316,11 +1161,9 @@ router.put('/script', async (req, res) => {
               }
             ).exec((err) => {
               if (err) {
-                res.status(500).json({
+                return res.status(500).json({
                   message: 'Fail to update project.',
                 });
-
-                return;
               }
 
               res.status(200).json({
@@ -1328,6 +1171,59 @@ router.put('/script', async (req, res) => {
               });
             });
           });
+        });
+      });
+  });
+});
+
+// parameter : { uid, id, data }
+router.get('/build/:uid/:id/', async (req, res) => {
+  if (req.params.uid === undefined || req.params.id === undefined) {
+    return res.status(400).json({
+      message: 'Bad Request.',
+    });
+  }
+
+  await User.findOne({
+    uid: req.params.uid,
+  }).exec((err, data) => {
+    if (err || !data) {
+      return res.status(500).json({
+        message: 'Fail to load user.',
+      });
+    }
+
+    Project.findOne({ owner: data._id, _id: req.params.id })
+      .populate('owner')
+      .populate('assetList')
+      .populate('assetData')
+      .populate([
+        {
+          path: 'windowList',
+          populate: {
+            path: 'elementData',
+            model: 'Element',
+          },
+        },
+        {
+          path: 'windowList',
+          populate: {
+            path: 'scriptData',
+            model: 'Script',
+          },
+        },
+      ])
+      .exec((err, data) => {
+        if (err || !data) {
+          return res.status(500).json({
+            message: 'Fail to load project.',
+          });
+        }
+
+        //일렉트론이랑 대충 잘 해봐~
+
+        res.status(200).json({
+          message: 'Successfully built.',
         });
       });
   });

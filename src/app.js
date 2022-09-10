@@ -7,7 +7,7 @@ import bodyParser from 'body-parser';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+export const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // express.js Init
 const app = express();
@@ -43,7 +43,7 @@ mongoose.connect(dburl);
 app.get('*', (_, res) => {
   res.status(404).json({
     status: 404,
-    message: 'Not Found',
+    message: 'Not Found.',
   });
 });
 

@@ -17,18 +17,16 @@ router.get('/', (req, res) => {
 // query: { platform, code }
 router.get('/auth', async (req, res) => {
   if (!req.query.platform || !req.query.code) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Bad Request.',
     });
-
-    return;
   }
 
   switch (req.query.platform) {
     case 'kakao':
       await axios
         .post(
-          `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&redirect_uri=http://localhost:3000/redirect/kakao&code=${req.query.code}&client_id=${kakaoRestAPIKey}`,
+          `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&redirect_uri=http://localhost:3001/redirect/kakao&code=${req.query.code}&client_id=${kakaoRestAPIKey}`,
           {
             headers: {
               'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
@@ -44,11 +42,9 @@ router.get('/auth', async (req, res) => {
             })
             .then((data) => {
               if (!data.data) {
-                res.status(500).json({
+                return res.status(500).json({
                   message: 'Failed to load user data.',
                 });
-
-                return;
               }
 
               res.status(200).json({
@@ -79,11 +75,9 @@ router.get('/auth', async (req, res) => {
 // body: { username, uid, translate }
 router.post('/login', async (req, res) => {
   if (!req.body.username || !req.body.uid || !req.body.translate) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Bad Request.',
     });
-
-    return;
   }
 
   if (
@@ -99,11 +93,9 @@ router.post('/login', async (req, res) => {
       uid: req.body.uid,
     }).exec((err, data) => {
       if (err || !data) {
-        res.status(500).json({
+        return res.status(500).json({
           message: 'Failed to load user.',
         });
-
-        return;
       }
 
       //User logged in.
@@ -133,11 +125,9 @@ router.post('/login', async (req, res) => {
       },
       (err) => {
         if (err) {
-          res.status(500).json({
+          return res.status(500).json({
             message: 'Failed to create user.',
           });
-
-          return;
         }
       }
     );
@@ -153,31 +143,25 @@ router.post('/login', async (req, res) => {
 // parameter: { uid }
 router.get('/projects/:uid', async (req, res) => {
   if (!req.params.uid) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Bad Request.',
     });
-
-    return;
   }
 
   await User.findOne({
     uid: req.params.uid,
   }).exec((err, data) => {
     if (err || !data) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Failed to load user.',
       });
-
-      return;
     }
 
     Project.find({ owner: data._id }).exec((err, data) => {
       if (err || !data) {
-        res.status(500).json({
+        return res.status(500).json({
           message: 'Fail to load project list.',
         });
-
-        return;
       }
 
       res.status(200).json({
@@ -190,22 +174,18 @@ router.get('/projects/:uid', async (req, res) => {
 // parameter: { token }
 router.get('/:token', async (req, res) => {
   if (req.params.token === undefined) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Bad Request.',
     });
-
-    return;
   }
 
   await User.findOne({
     token: req.params.token,
   }).exec((err, data) => {
     if (err || !data) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Failed to load user data.',
       });
-
-      return;
     }
 
     res.status(200).json({
@@ -219,11 +199,9 @@ router.get('/:token', async (req, res) => {
 // body: { token, translate }
 router.put('/', async (req, res) => {
   if (!req.body.token || !req.body.translate) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Bad Request.',
     });
-
-    return;
   }
 
   await User.updateOne(
@@ -235,11 +213,9 @@ router.put('/', async (req, res) => {
     }
   ).exec((err) => {
     if (err) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Failed to update user.',
       });
-
-      return;
     }
 
     res.status(200).json({
