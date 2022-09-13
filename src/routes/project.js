@@ -8,6 +8,7 @@ import Element from '../schema/element.js';
 import Script from '../schema/script.js';
 
 import { __dirname } from '../app.js';
+import fs from 'fs';
 
 const router = express.Router();
 
@@ -1220,7 +1221,18 @@ router.get('/build/:uid/:id/', async (req, res) => {
           });
         }
 
-        //일렉트론이랑 대충 잘 해봐~
+        fs.writeFile(
+          `${__dirname}/application/src/data/data.json`,
+          JSON.stringify(data),
+          'utf8',
+          (err) => {
+            console.log(err);
+
+            return res.status(500).json({
+              message: 'Fail to write data file.',
+            });
+          }
+        );
 
         res.status(200).json({
           message: 'Successfully built.',
