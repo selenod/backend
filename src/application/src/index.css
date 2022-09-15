@@ -1,0 +1,33 @@
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+* {
+  font-family: 'Pretendard Variable', -apple-system, BlinkMacSystemFont,
+    system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo',
+    'Noto Sans KR', 'Malgun Gothic', sans-serif;
+  margin: 0;
+  padding: 0;
+  letter-spacing: -0.025rem;
+}
+
+*:focus {
+  outline: 0;
+}
+
+img {
+  image-rendering: -webkit-optimize-contrast;
+  backface-visibility: hidden;
+}
+
+li {
+  list-style: none;
+}
+
+p {
+  margin: 0;
+}

@@ -10,6 +10,8 @@ if (require('electron-squirrel-startup')) {
 }
 
 const createWindow = () => {
+  app.setName(data.name);
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: data.windowList[0].windowData.width,
