@@ -8,18 +8,11 @@ function Page() {
   const [elementData, setElementData] = React.useState([]);
 
   React.useEffect(() => {
-    if (window.location.hash === '') {
-      data.windowList[0].elementData.forEach((element) =>
-        setElementData([...elementData, element])
-      );
-    } else {
-      data.windowList[window.location.hash.substring(2)].elementData.forEach(
-        (element) => {
-          console.log(element);
-          setElementData([...elementData, element]);
-        }
-      );
-    }
+    setElementData(
+      data.windowList[
+        window.location.hash === '' ? 0 : window.location.hash.substring(2)
+      ].elementData
+    );
   }, []);
 
   return (
@@ -50,8 +43,7 @@ function Page() {
         ))
       ) : (
         <div>
-          {elementData.length}
-          {/* {elementData.length === 0
+          {elementData.length === 0
             ? null
             : elementData.map((element) => {
                 switch (element.type) {
@@ -438,7 +430,7 @@ function Page() {
                   default:
                     return undefined;
                 }
-              })} */}
+              })}
         </div>
       )}
     </div>
