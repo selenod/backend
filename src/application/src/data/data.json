@@ -1,1 +1,128 @@
-{"_id":"631b56708af27b6b2122c5c7","name":"ㅇㅇ","owner":{"_id":"6319bee4f5b13cb415b81247","username":"yejoon","uid":"2391090004","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjIzOTEwOTAwMDQsImlhdCI6MTY2MjYzMTY1MiwiaXNzIjoiU2VsZW5vZCIsInN1YiI6IlNlbGVub2QgSldUIn0.XI0e6p-_5X88WWYe3RlG8xp6HJbXHiwQkdaxueXu3es","translate":"ko"},"createAt":"2022-09-09T15:06:24.691Z","modifiedAt":"2022-09-14T15:54:45.474Z","windowList":[{"windowData":{"width":400,"height":300},"_id":"631b56708af27b6b2122c5c5","name":"ㅇ","id":0,"scriptData":{"_id":"631b56708af27b6b2122c5c3","data":{"3c75644b-9309-4097-b759-c93f8ce63b0e":{"position":{"x":5192,"y":5222},"nodeId":"selene.test.Method1","inputConnections":[{"connection":{"id":"e4f2121c-0b0d-4b4d-83fb-6cc18dd78bb1","pinType":1,"name":"flow"},"name":"flow","_id":"63218343861b86f0d4a552a3"},{"name":"Sans","_id":"63218343861b86f0d4a552a4"}],"zIndex":1,"_id":"63218343861b86f0d4a552a2"},"e4f2121c-0b0d-4b4d-83fb-6cc18dd78bb1":{"position":{"x":5192,"y":5333},"nodeId":"selene.test.Method1","inputConnections":[{"connection":{"id":"3c75644b-9309-4097-b759-c93f8ce63b0e","pinType":1,"name":"flow"},"name":"flow","_id":"63218343861b86f0d4a552a6"},{"name":"Sans","_id":"63218343861b86f0d4a552a7"}],"zIndex":2,"_id":"63218343861b86f0d4a552a5"}}},"elementData":[{"_id":"6321f86550f2dcf742cb1f45","name":"텍스트 1","id":0,"type":"text","x":"0","y":"0","xAlign":0,"yAlign":0,"rotation":"0","index":0,"text":"New Text","fontSize":16,"color":"#000"},{"_id":"6321f9038671136ab6775b1f","name":"버튼 1","id":1,"type":"button","x":"50%","y":"50%","xAlign":50,"yAlign":50,"rotation":"0","index":0,"width":"70","height":"40","text":"New Text","fontSize":16,"color":"#fff","backgroundColor":"#7f52ff","borderRadius":"5"},{"_id":"6321f945e4410e5f201d796d","name":"체크박스 1","id":2,"type":"checkbox","x":"0","y":"0","xAlign":0,"yAlign":0,"rotation":"0","index":0,"width":"15","height":"15","color":"#8052ff","backgroundColor":"#fff","borderRadius":"5","borderColor":"#e2e2e2","isChecked":false}]},{"windowData":{"width":1366,"height":768},"_id":"631c3dcc6aab0c8a42f43ac2","name":"ㄴ","id":1,"scriptData":{"_id":"631c3dcc6aab0c8a42f43ac0","data":{}},"elementData":[]}],"assetList":[],"assetData":[],"assetLength":0}
+{
+  "_id": "631b56708af27b6b2122c5c7",
+  "name": "ㅇㅇ",
+  "owner": {
+    "_id": "6319bee4f5b13cb415b81247",
+    "username": "yejoon",
+    "uid": "2391090004",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjIzOTEwOTAwMDQsImlhdCI6MTY2MjYzMTY1MiwiaXNzIjoiU2VsZW5vZCIsInN1YiI6IlNlbGVub2QgSldUIn0.XI0e6p-_5X88WWYe3RlG8xp6HJbXHiwQkdaxueXu3es",
+    "translate": "ko"
+  },
+  "createAt": "2022-09-09T15:06:24.691Z",
+  "modifiedAt": "2022-09-14T15:54:45.474Z",
+  "windowList": [
+    {
+      "windowData": { "width": 400, "height": 300 },
+      "_id": "631b56708af27b6b2122c5c5",
+      "name": "ㅇ",
+      "id": 0,
+      "scriptData": {
+        "_id": "631b56708af27b6b2122c5c3",
+        "data": {
+          "3c75644b-9309-4097-b759-c93f8ce63b0e": {
+            "position": { "x": 5192, "y": 5222 },
+            "nodeId": "selene.test.Method1",
+            "inputConnections": [
+              {
+                "connection": {
+                  "id": "e4f2121c-0b0d-4b4d-83fb-6cc18dd78bb1",
+                  "pinType": 1,
+                  "name": "flow"
+                },
+                "name": "flow",
+                "_id": "63218343861b86f0d4a552a3"
+              },
+              { "name": "Sans", "_id": "63218343861b86f0d4a552a4" }
+            ],
+            "zIndex": 1,
+            "_id": "63218343861b86f0d4a552a2"
+          },
+          "e4f2121c-0b0d-4b4d-83fb-6cc18dd78bb1": {
+            "position": { "x": 5192, "y": 5333 },
+            "nodeId": "selene.test.Method1",
+            "inputConnections": [
+              {
+                "connection": {
+                  "id": "3c75644b-9309-4097-b759-c93f8ce63b0e",
+                  "pinType": 1,
+                  "name": "flow"
+                },
+                "name": "flow",
+                "_id": "63218343861b86f0d4a552a6"
+              },
+              { "name": "Sans", "_id": "63218343861b86f0d4a552a7" }
+            ],
+            "zIndex": 2,
+            "_id": "63218343861b86f0d4a552a5"
+          }
+        }
+      },
+      "elementData": [
+        {
+          "_id": "6321f86550f2dcf742cb1f45",
+          "name": "텍스트 1",
+          "id": 0,
+          "type": "text",
+          "x": "0",
+          "y": "0",
+          "xAlign": 0,
+          "yAlign": 0,
+          "rotation": "0",
+          "index": 0,
+          "text": "New Text",
+          "fontSize": 16,
+          "color": "#000"
+        },
+        {
+          "_id": "6321f9038671136ab6775b1f",
+          "name": "버튼 1",
+          "id": 1,
+          "type": "button",
+          "x": "50%",
+          "y": "50%",
+          "xAlign": 50,
+          "yAlign": 50,
+          "rotation": "0",
+          "index": 0,
+          "width": "70",
+          "height": "40",
+          "text": "New Text",
+          "fontSize": 16,
+          "color": "#fff",
+          "backgroundColor": "#7f52ff",
+          "borderRadius": "5"
+        },
+        {
+          "_id": "6321f945e4410e5f201d796d",
+          "name": "체크박스 1",
+          "id": 2,
+          "type": "checkbox",
+          "x": "0",
+          "y": "0",
+          "xAlign": 0,
+          "yAlign": 0,
+          "rotation": "0",
+          "index": 0,
+          "width": "15",
+          "height": "15",
+          "color": "#8052ff",
+          "backgroundColor": "#fff",
+          "borderRadius": "5",
+          "borderColor": "#e2e2e2",
+          "isChecked": false
+        }
+      ]
+    },
+    {
+      "windowData": { "width": 1366, "height": 768 },
+      "_id": "631c3dcc6aab0c8a42f43ac2",
+      "name": "ㄴ",
+      "id": 1,
+      "scriptData": { "_id": "631c3dcc6aab0c8a42f43ac0", "data": {} },
+      "elementData": []
+    }
+  ],
+  "assetList": [],
+  "assetData": [],
+  "assetLength": 0
+}
