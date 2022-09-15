@@ -31,3 +31,16 @@ li {
 p {
   margin: 0;
 }
+
+input {
+  padding: 0 0.7rem;
+}
+
+.button {
+  cursor: pointer;
+  transition: ease-out filter 100ms;
+}
+
+.button:hover {
+  filter: brightness(90%);
+}

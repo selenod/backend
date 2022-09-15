@@ -207,6 +207,7 @@ function Page() {
                     return (
                       <div
                         key={element.id}
+                        className="button"
                         style={{
                           position: 'absolute',
                           top: `calc(${
