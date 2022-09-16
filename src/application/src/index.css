@@ -4,6 +4,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   user-select: none;
   -webkit-user-drag: none;
+  width: 100vw;
+  height: 100vh;
 }
 
 * {
@@ -38,9 +40,8 @@ input {
 
 .button {
   cursor: pointer;
-  transition: ease-out filter 100ms;
 }
 
 .button:hover {
-  filter: brightness(90%);
+  filter: brightness(87%);
 }

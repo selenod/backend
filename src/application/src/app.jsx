@@ -6,12 +6,24 @@ import 'pretendard/dist/web/variable/pretendardvariable.css';
 
 function Page() {
   const [elementData, setElementData] = React.useState([]);
+  /*
+    id: number;
+    contents?: string;
+  */
+  const [assetData, setAssetData] = React.useState([]);
 
   React.useEffect(() => {
     setElementData(
       data.windowList[
         window.location.hash === '' ? 0 : window.location.hash.substring(2)
       ].elementData
+    );
+
+    setAssetData(
+      data.assetData.map((asset) => ({
+        id: asset.id,
+        contents: asset.contents ?? undefined,
+      }))
     );
   }, []);
 
@@ -158,10 +170,11 @@ function Page() {
                     return (
                       <video
                         key={element.id}
-                        poster={
+                        src={
                           assetData.find((asset) => asset.id === element.src)
                             ?.contents
                         }
+                        controls
                         style={{
                           position: 'absolute',
                           top: `calc(${
@@ -194,14 +207,7 @@ function Page() {
                           })`,
                           zIndex: -10000 + element.index,
                         }}
-                      >
-                        <source
-                          src={
-                            assetData.find((asset) => asset.id === element.src)
-                              ?.contents
-                          }
-                        />
-                      </video>
+                      ></video>
                     );
                   case 'button':
                     return (

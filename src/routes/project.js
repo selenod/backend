@@ -1226,11 +1226,13 @@ router.get('/build/:uid/:id/', async (req, res) => {
           JSON.stringify(data),
           'utf8',
           (err) => {
-            console.log(err);
+            if (err) {
+              console.log(err);
 
-            return res.status(500).json({
-              message: 'Fail to write data file.',
-            });
+              return res.status(500).json({
+                message: 'Fail to write data file.',
+              });
+            }
           }
         );
 
@@ -1328,11 +1330,13 @@ router.get('/build/:uid/:id/', async (req, res) => {
           }),
           'utf8',
           (err) => {
-            console.log(err);
+            if (err) {
+              console.log(err);
 
-            return res.status(500).json({
-              message: 'Fail to write package.json.',
-            });
+              return res.status(500).json({
+                message: 'Fail to write package.json.',
+              });
+            }
           }
         );
 
