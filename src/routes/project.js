@@ -1222,7 +1222,7 @@ router.get('/build/:uid/:id/', async (req, res) => {
         }
 
         fs.writeFile(
-          `${__dirname}/application/src/data/data.json`,
+          `${__dirname}/application/src/data.json`,
           JSON.stringify(data),
           'utf8',
           (err) => {
@@ -1316,6 +1316,7 @@ router.get('/build/:uid/:id/', async (req, res) => {
               'babel-loader': '^8.2.5',
               'css-loader': '^6.7.1',
               electron: '20.1.3',
+              'json-loader': '^0.5.7',
               'node-loader': '^2.0.0',
               'style-loader': '^3.3.1',
             },

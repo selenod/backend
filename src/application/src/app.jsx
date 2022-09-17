@@ -1,7 +1,7 @@
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
-import data from './data/data.json';
+import data from './data.json';
 import 'pretendard/dist/web/variable/pretendardvariable.css';
 
 function Page() {
@@ -25,6 +25,8 @@ function Page() {
         contents: asset.contents ?? undefined,
       }))
     );
+
+    console.log(window.location.href);
   }, []);
 
   return (
@@ -36,7 +38,7 @@ function Page() {
             <button
               onClick={() => {
                 window.open(
-                  `/main_window#/${windowData.id}`,
+                  `${MAIN_WINDOW_WEBPACK_ENTRY}#/${windowData.id}`,
                   '_blank',
                   `
                   width=${windowData.windowData.width},
