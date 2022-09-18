@@ -9,6 +9,7 @@ import Script from '../schema/script.js';
 
 import { __dirname } from '../app.js';
 import fs from 'fs';
+import shell from 'shelljs';
 
 const router = express.Router();
 
@@ -1221,128 +1222,140 @@ router.get('/build/:uid/:id/', async (req, res) => {
           });
         }
 
-        fs.writeFile(
+        const wsData = fs.createWriteStream(
           `${__dirname}/application/src/data.json`,
-          JSON.stringify(data),
-          'utf8',
-          (err) => {
-            if (err) {
-              console.log(err);
-
-              return res.status(500).json({
-                message: 'Fail to write data file.',
-              });
-            }
+          {
+            encoding: 'utf-8',
           }
         );
 
-        fs.writeFile(
-          `${__dirname}/application/package.json`,
-          JSON.stringify({
-            name: 'application',
-            productName: data.name,
-            version: '1.0.0',
-            description: 'My Selenod Application',
-            main: '.webpack/main',
-            scripts: {
-              start: 'electron-forge start',
-              package: 'electron-forge package',
-              make: 'electron-forge make',
-              publish: 'electron-forge publish',
-              lint: 'echo "No linting configured"',
-            },
-            keywords: [],
-            author: {
-              name: 'Yejoon Kim',
-              email: 'unsigndid@gmail.com',
-            },
-            license: 'MIT',
-            config: {
-              forge: {
-                packagerConfig: {},
-                makers: [
-                  {
-                    name: '@electron-forge/maker-squirrel',
-                    config: {
-                      name: 'Selenod Application',
-                    },
-                  },
-                  {
-                    name: '@electron-forge/maker-zip',
-                    platforms: ['darwin'],
-                  },
-                  {
-                    name: '@electron-forge/maker-deb',
-                    config: {},
-                  },
-                  {
-                    name: '@electron-forge/maker-rpm',
-                    config: {},
-                  },
-                ],
-                plugins: [
-                  [
-                    '@electron-forge/plugin-webpack',
+        wsData.write(JSON.stringify(data), (err) => {
+          if (err) {
+            console.log(err);
+
+            return res.status(500).json({
+              message: 'Fail to write data file.',
+            });
+          }
+
+          const wsPackage = fs.createWriteStream(
+            `${__dirname}/application/package.json`,
+            {
+              encoding: 'utf-8',
+            }
+          );
+
+          wsPackage.write(
+            JSON.stringify({
+              name: 'application',
+              productName: data.name,
+              version: '1.0.0',
+              description: 'My Selenod Application',
+              main: '.webpack/main',
+              scripts: {
+                start: 'electron-forge start',
+                package: 'electron-forge package',
+                make: 'electron-forge make',
+                publish: 'electron-forge publish',
+                lint: 'echo "No linting configured"',
+              },
+              keywords: [],
+              author: {
+                name: 'Yejoon Kim',
+                email: 'unsigndid@gmail.com',
+              },
+              license: 'MIT',
+              config: {
+                forge: {
+                  packagerConfig: {},
+                  makers: [
                     {
-                      mainConfig: './webpack.main.config.js',
-                      renderer: {
-                        config: './webpack.renderer.config.js',
-                        entryPoints: [
-                          {
-                            html: './src/index.html',
-                            js: './src/renderer.js',
-                            name: 'main_window',
-                            preload: {
-                              js: './src/preload.js',
-                            },
-                          },
-                        ],
+                      name: '@electron-forge/maker-squirrel',
+                      config: {
+                        name: 'Selenod Application',
                       },
                     },
+                    {
+                      name: '@electron-forge/maker-zip',
+                      platforms: ['darwin'],
+                    },
+                    {
+                      name: '@electron-forge/maker-deb',
+                      config: {},
+                    },
+                    {
+                      name: '@electron-forge/maker-rpm',
+                      config: {},
+                    },
                   ],
-                ],
+                  plugins: [
+                    [
+                      '@electron-forge/plugin-webpack',
+                      {
+                        mainConfig: './webpack.main.config.js',
+                        renderer: {
+                          config: './webpack.renderer.config.js',
+                          entryPoints: [
+                            {
+                              html: './src/index.html',
+                              js: './src/renderer.js',
+                              name: 'main_window',
+                              preload: {
+                                js: './src/preload.js',
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  ],
+                },
               },
-            },
-            devDependencies: {
-              '@babel/core': '^7.19.0',
-              '@babel/preset-react': '^7.18.6',
-              '@electron-forge/cli': '^6.0.0-beta.66',
-              '@electron-forge/maker-deb': '^6.0.0-beta.66',
-              '@electron-forge/maker-rpm': '^6.0.0-beta.66',
-              '@electron-forge/maker-squirrel': '^6.0.0-beta.66',
-              '@electron-forge/maker-zip': '^6.0.0-beta.66',
-              '@electron-forge/plugin-webpack': '^6.0.0-beta.66',
-              '@vercel/webpack-asset-relocator-loader': '^1.7.3',
-              'babel-loader': '^8.2.5',
-              'css-loader': '^6.7.1',
-              electron: '20.1.3',
-              'json-loader': '^0.5.7',
-              'node-loader': '^2.0.0',
-              'style-loader': '^3.3.1',
-            },
-            dependencies: {
-              '@electron/remote': '^2.0.8',
-              'electron-squirrel-startup': '^1.0.0',
-              'file-loader': '^6.2.0',
-              react: '^18.2.0',
-              'react-dom': '^18.2.0',
-              'react-router-dom': '^6.3.0',
-            },
-          }),
-          'utf8',
-          (err) => {
-            if (err) {
-              console.log(err);
+              devDependencies: {
+                '@babel/core': '^7.19.0',
+                '@babel/preset-react': '^7.18.6',
+                '@electron-forge/cli': '^6.0.0-beta.66',
+                '@electron-forge/maker-deb': '^6.0.0-beta.66',
+                '@electron-forge/maker-rpm': '^6.0.0-beta.66',
+                '@electron-forge/maker-squirrel': '^6.0.0-beta.66',
+                '@electron-forge/maker-zip': '^6.0.0-beta.66',
+                '@electron-forge/plugin-webpack': '^6.0.0-beta.66',
+                '@vercel/webpack-asset-relocator-loader': '^1.7.3',
+                'babel-loader': '^8.2.5',
+                'css-loader': '^6.7.1',
+                electron: '20.1.3',
+                'json-loader': '^0.5.7',
+                'node-loader': '^2.0.0',
+                'style-loader': '^3.3.1',
+              },
+              dependencies: {
+                '@electron/remote': '^2.0.8',
+                'electron-squirrel-startup': '^1.0.0',
+                'file-loader': '^6.2.0',
+                react: '^18.2.0',
+                'react-dom': '^18.2.0',
+                'react-router-dom': '^6.3.0',
+              },
+            }),
+            (err) => {
+              if (err) {
+                console.log(err);
 
-              return res.status(500).json({
-                message: 'Fail to write package.json.',
-              });
+                return res.status(500).json({
+                  message: 'Fail to write package.json.',
+                });
+              }
             }
-          }
-        );
+          );
 
-        res.status(200).json({
-          message: 'Successfully built.',
+          shell.cd(`${__dirname}/application`);
+          shell.exec('npm run make', { silent: true }, () => {
+            console.log(`${data.name}(${data._id}) built successfully.`);
+
+            res.status(200).json({
+              message: 'Successfully built.',
+            });
+          });
         });
       });
   });

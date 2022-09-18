@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon src/app.js",
+    "start": "node src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -18,7 +18,8 @@
     "express": "^4.18.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.5.2",
-    "npm": "^8.17.0"
+    "npm": "^8.17.0",
+    "shelljs": "^0.8.5"
   },
   "type": "module",
   "devDependencies": {
