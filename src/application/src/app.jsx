@@ -74,6 +74,7 @@ function Page() {
                             !isNaN(element.x) ? `${element.x}px` : element.x
                           })`,
                           fontSize: element.fontSize,
+                          fontWeight: element.fontWeight,
                           color: element.color,
                           margin: 0,
                           backgroundColor: element.backgroundColor,
@@ -255,6 +256,7 @@ function Page() {
                           outline: 0,
                           color: element.color,
                           fontSize: element.fontSize,
+                          fontWeight: element.fontWeight,
                           zIndex: -10000 + element.index,
                         }}
                       >
@@ -387,6 +389,7 @@ function Page() {
                           boxSizing: 'border-box',
                           border: `1.5px solid ${element.borderColor}`,
                           fontSize: element.fontSize,
+                          fontWeight: element.fontWeight,
                           color: element.color,
                         }}
                         type="text"
@@ -431,6 +434,7 @@ function Page() {
                           boxSizing: 'border-box',
                           border: `1.5px solid ${element.borderColor}`,
                           fontSize: element.fontSize,
+                          fontWeight: element.fontWeight,
                           color: element.color,
                         }}
                         placeholder={element.text}

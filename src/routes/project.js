@@ -50,8 +50,8 @@ router.post('/', async (req, res) => {
             name: 'Default Window',
             id: 0,
             windowData: {
-              width: 1366,
-              height: 768,
+              width: 500,
+              height: 300,
             },
             scriptData: scriptData._id,
             elementData: [],
@@ -280,8 +280,8 @@ router.post('/window', async (req, res) => {
                 name: req.body.name,
                 id: data.windowList[data.windowList.length - 1].id + 1,
                 windowData: {
-                  width: 1366,
-                  height: 768,
+                  width: 500,
+                  height: 300,
                 },
                 scriptData: scriptData._id,
                 elementData: [],
@@ -844,6 +844,13 @@ router.post('/element', async (req, res) => {
                   req.body.type === 'sl-input' ||
                   req.body.type === 'ml-input'
                     ? 16
+                    : undefined,
+                fontWeight:
+                  req.body.type === 'text' ||
+                  req.body.type === 'button' ||
+                  req.body.type === 'sl-input' ||
+                  req.body.type === 'ml-input'
+                    ? 400
                     : undefined,
                 color:
                   req.body.type === 'text' ||

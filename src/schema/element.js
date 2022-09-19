@@ -50,6 +50,7 @@ const elementSchema = new Schema(
     // Text
     text: String,
     fontSize: Number,
+    fontWeight: Number,
     color: String,
     backgroundColor: String,
     borderRadius: String,
