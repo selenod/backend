@@ -1,5 +1,0 @@
-<<<<<<< HEAD
-
-=======
-{"_id":"6328773cae4d0f32e42aaf57","name":"ㅇㅇ","owner":{"_id":"6314a5ec02fdf08795426e9c","username":"Yejoon Kim","uid":"111605311924540287856","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMTE2MDUzMTE5MjQ1NDAyODc4NTYiLCJpYXQiOjE2NjIyOTc1ODAsImlzcyI6IlNlbGVub2QiLCJzdWIiOiJTZWxlbm9kIEpXVCJ9.Er7ArgLhIXY14TLopw5W7kwgZvPx4iDBoY_reet5sfg","translate":"ko"},"createAt":"2022-09-19T14:05:48.791Z","modifiedAt":"2022-09-20T10:01:31.413Z","windowList":[{"windowData":{"width":500,"height":300},"_id":"6328773cae4d0f32e42aaf55","name":"Default Window","id":0,"scriptData":{"_id":"6328773cae4d0f32e42aaf53","data":{}},"elementData":[{"_id":"63298e5f4a36d264cf723ee8","name":"텍스트 1","id":0,"type":"text","x":"0","y":"0","xAlign":0,"yAlign":0,"rotation":"0","index":0,"text":"New Text","fontSize":16,"fontWeight":400,"color":"#000"}]},{"windowData":{"width":500,"height":300},"_id":"632879c122d2301ee24282ee","name":"ㅇㅇ","id":1,"scriptData":{"_id":"632879c122d2301ee24282ec","data":{}},"elementData":[]}],"assetList":[],"assetData":[],"assetLength":0}
->>>>>>> 367e273 (log build date)
