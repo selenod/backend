@@ -1357,7 +1357,15 @@ router.get('/build/:uid/:id/', async (req, res) => {
 
           shell.cd(`${__dirname}/application`);
           shell.exec('npm run make', { silent: true }, () => {
-            console.log(`${data.name}(${data._id}) built successfully.`);
+            console.log(
+              `[${new Date().toLocaleString('en-US', {
+                timeZone: 'UTC',
+              })}] ${data.name}(${data._id}) built successfully.`
+            );
+
+            shell.cd(`${__dirname}/application/out/${data.name}-darwin-arm64`);
+            // const text = shell.cat(`${data.name}.app`).stdout;
+            // console.log(text);
 
             res.status(200).json({
               message: 'Successfully built.',
