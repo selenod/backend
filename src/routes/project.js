@@ -1276,23 +1276,29 @@ router.get('/build/:uid/:id/', async (req, res) => {
                 forge: {
                   packagerConfig: {},
                   makers: [
+                    // {
+                    //   name: '@electron-forge/maker-squirrel',
+                    //   config: {
+                    //     name: 'Selenod Application',
+                    //   },
+                    // },
+                    // {
+                    //   name: '@electron-forge/maker-zip',
+                    //   platforms: ['darwin'],
+                    // },
+                    // {
+                    //   name: '@electron-forge/maker-deb',
+                    //   config: {},
+                    // },
+                    // {
+                    //   name: '@electron-forge/maker-rpm',
+                    //   config: {},
+                    // },
                     {
-                      name: '@electron-forge/maker-squirrel',
+                      name: '@electron-forge/maker-dmg',
                       config: {
-                        name: 'Selenod Application',
+                        format: 'ULFO',
                       },
-                    },
-                    {
-                      name: '@electron-forge/maker-zip',
-                      platforms: ['darwin'],
-                    },
-                    {
-                      name: '@electron-forge/maker-deb',
-                      config: {},
-                    },
-                    {
-                      name: '@electron-forge/maker-rpm',
-                      config: {},
                     },
                   ],
                   plugins: [
@@ -1326,6 +1332,7 @@ router.get('/build/:uid/:id/', async (req, res) => {
                 '@electron-forge/maker-rpm': '^6.0.0-beta.66',
                 '@electron-forge/maker-squirrel': '^6.0.0-beta.66',
                 '@electron-forge/maker-zip': '^6.0.0-beta.66',
+                '@electron-forge/maker-dmg': '^6.0.0-beta.66',
                 '@electron-forge/plugin-webpack': '^6.0.0-beta.66',
                 '@vercel/webpack-asset-relocator-loader': '^1.7.3',
                 'babel-loader': '^8.2.5',
@@ -1357,19 +1364,10 @@ router.get('/build/:uid/:id/', async (req, res) => {
 
           shell.cd(`${__dirname}/application`);
           shell.exec('npm run make', { silent: true }, () => {
-            console.log(
-              `[${new Date().toLocaleString('en-US', {
-                timeZone: 'UTC',
-              })}] ${data.name}(${data._id}) built successfully.`
+            res.download(
+              `${__dirname}/application/out/make/${data.name}-1.0.0-arm64.dmg`,
+              `${data.name}.dmg`
             );
-
-            shell.cd(`${__dirname}/application/out/${data.name}-darwin-arm64`);
-            // const text = shell.cat(`${data.name}.app`).stdout;
-            // console.log(text);
-
-            res.status(200).json({
-              message: 'Successfully built.',
-            });
           });
         });
       });
