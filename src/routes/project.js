@@ -1368,6 +1368,7 @@ router.get('/build/:uid/:id/:maker', async (req, res) => {
           );
 
           shell.cd(`${__dirname}/application`);
+          shell.exec('rm -r out');
           shell.exec('npm run make', () => {
             res.download(
               `${__dirname}/application/out/make/${data.name}.dmg`,
