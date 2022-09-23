@@ -6,11 +6,18 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import queue from 'express-queue';
 
 export const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // express.js Init
 const app = express();
+
+// setup express-queue
+const buildQueue = queue({
+  activeLimit: 1,
+  queuedLimit: -1,
+});
 
 // express.js settings
 app.use(express.static(__dirname + '/public'));
@@ -20,6 +27,7 @@ app.use(express.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(bodyParser.json());
+app.use(buildQueue);
 
 // express.js routes
 import indexRouter from './routes/index.js';

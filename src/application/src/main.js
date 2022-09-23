@@ -1,5 +1,6 @@
 const { app, BrowserWindow } = require('electron');
 const data = require('./data.json');
+const path = require('path');
 require('@electron/remote/main').initialize();
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -21,7 +22,7 @@ const createWindow = () => {
     webPreferences: {
       nodeIntegration: true,
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
-      webSecurity: true,
+      webSecurity: false,
       contextIsolation: false,
       // enableRemoteModule: true,
     },

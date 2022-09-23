@@ -47,7 +47,7 @@ router.post('/', async (req, res) => {
 
         Window.create(
           {
-            name: 'Default Window',
+            name: 'Main Window',
             id: 0,
             windowData: {
               width: 500,
@@ -1185,9 +1185,13 @@ router.put('/script', async (req, res) => {
   });
 });
 
-// parameter : { uid, id, data }
-router.get('/build/:uid/:id/', async (req, res) => {
-  if (req.params.uid === undefined || req.params.id === undefined) {
+// parameter : { uid, id, maker }
+router.get('/build/:uid/:id/:maker', async (req, res) => {
+  if (
+    req.params.uid === undefined ||
+    req.params.id === undefined ||
+    req.params.maker === undefined
+  ) {
     return res.status(400).json({
       message: 'Bad Request.',
     });
@@ -1260,7 +1264,7 @@ router.get('/build/:uid/:id/', async (req, res) => {
               description: 'My Selenod Application',
               main: '.webpack/main',
               scripts: {
-                start: 'electron-forge start',
+                start: 'xattr -rc . && electron-forge start',
                 package: 'electron-forge package',
                 make: 'electron-forge make',
                 publish: 'electron-forge publish',
@@ -1274,7 +1278,6 @@ router.get('/build/:uid/:id/', async (req, res) => {
               license: 'MIT',
               config: {
                 forge: {
-                  packagerConfig: {},
                   makers: [
                     // {
                     //   name: '@electron-forge/maker-squirrel',
@@ -1297,7 +1300,9 @@ router.get('/build/:uid/:id/', async (req, res) => {
                     {
                       name: '@electron-forge/maker-dmg',
                       config: {
-                        format: 'ULFO',
+                        name: data.name,
+                        overwrite: true,
+                        // format: 'ULFO',
                       },
                     },
                   ],
@@ -1363,9 +1368,9 @@ router.get('/build/:uid/:id/', async (req, res) => {
           );
 
           shell.cd(`${__dirname}/application`);
-          shell.exec('npm run make', { silent: true }, () => {
+          shell.exec('npm run make', () => {
             res.download(
-              `${__dirname}/application/out/make/${data.name}-1.0.0-arm64.dmg`,
+              `${__dirname}/application/out/make/${data.name}.dmg`,
               `${data.name}.dmg`
             );
           });
