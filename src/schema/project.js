@@ -13,6 +13,7 @@ const projectSchema = new Schema(
       required: true,
       ref: 'User',
     },
+    route: String,
     createAt: {
       type: Date,
       required: true,

@@ -8,8 +8,6 @@ import Element from '../schema/element.js';
 import Script from '../schema/script.js';
 
 import { __dirname } from '../app.js';
-import fs from 'fs';
-import shell from 'shelljs';
 
 const router = express.Router();
 
@@ -47,11 +45,13 @@ router.post('/', async (req, res) => {
 
         Window.create(
           {
-            name: 'Main Window',
+            name: 'Main Page',
             id: 0,
             windowData: {
               width: 500,
               height: 300,
+              themeColor: '#fff',
+              route: '/',
             },
             scriptData: scriptData._id,
             elementData: [],
@@ -74,15 +74,30 @@ router.post('/', async (req, res) => {
                 assetData: [],
                 assetLength: 0,
               },
-              (err) => {
+              (err, projectData) => {
                 if (err) {
                   return res.status(500).json({
                     message: 'Fail to create project.',
                   });
                 }
 
-                res.status(200).json({
-                  message: 'Successfully created.',
+                Project.updateOne(
+                  {
+                    _id: projectData._id,
+                  },
+                  {
+                    route: `/${projectData._id}`,
+                  }
+                ).exec((err) => {
+                  if (err) {
+                    return res.status(500).json({
+                      message: 'Fail to set route.',
+                    });
+                  }
+
+                  res.status(200).json({
+                    message: 'Successfully created.',
+                  });
                 });
               }
             );
@@ -282,6 +297,10 @@ router.post('/window', async (req, res) => {
                 windowData: {
                   width: 500,
                   height: 300,
+                  themeColor: '#fff',
+                  route: `/${
+                    data.windowList[data.windowList.length - 1].id + 1
+                  }`,
                 },
                 scriptData: scriptData._id,
                 elementData: [],
@@ -1179,201 +1198,6 @@ router.put('/script', async (req, res) => {
                 message: 'Successfully updated.',
               });
             });
-          });
-        });
-      });
-  });
-});
-
-// parameter : { uid, id, maker }
-router.get('/build/:uid/:id/:maker', async (req, res) => {
-  if (
-    req.params.uid === undefined ||
-    req.params.id === undefined ||
-    req.params.maker === undefined
-  ) {
-    return res.status(400).json({
-      message: 'Bad Request.',
-    });
-  }
-
-  await User.findOne({
-    uid: req.params.uid,
-  }).exec((err, data) => {
-    if (err || !data) {
-      return res.status(500).json({
-        message: 'Fail to load user.',
-      });
-    }
-
-    Project.findOne({ owner: data._id, _id: req.params.id })
-      .populate('owner')
-      .populate('assetList')
-      .populate('assetData')
-      .populate([
-        {
-          path: 'windowList',
-          populate: {
-            path: 'elementData',
-            model: 'Element',
-          },
-        },
-        {
-          path: 'windowList',
-          populate: {
-            path: 'scriptData',
-            model: 'Script',
-          },
-        },
-      ])
-      .exec((err, data) => {
-        if (err || !data) {
-          return res.status(500).json({
-            message: 'Fail to load project.',
-          });
-        }
-
-        const wsData = fs.createWriteStream(
-          `${__dirname}/application/src/data.json`,
-          {
-            encoding: 'utf-8',
-          }
-        );
-
-        wsData.write(JSON.stringify(data), (err) => {
-          if (err) {
-            console.log(err);
-
-            return res.status(500).json({
-              message: 'Fail to write data file.',
-            });
-          }
-
-          const wsPackage = fs.createWriteStream(
-            `${__dirname}/application/package.json`,
-            {
-              encoding: 'utf-8',
-            }
-          );
-
-          wsPackage.write(
-            JSON.stringify({
-              name: 'application',
-              productName: data.name,
-              version: '1.0.0',
-              description: 'My Selenod Application',
-              main: '.webpack/main',
-              scripts: {
-                start: 'xattr -rc . && electron-forge start',
-                package: 'electron-forge package',
-                make: 'electron-forge make',
-                publish: 'electron-forge publish',
-                lint: 'echo "No linting configured"',
-              },
-              keywords: [],
-              author: {
-                name: 'Yejoon Kim',
-                email: 'unsigndid@gmail.com',
-              },
-              license: 'MIT',
-              config: {
-                forge: {
-                  makers: [
-                    // {
-                    //   name: '@electron-forge/maker-squirrel',
-                    //   config: {
-                    //     name: 'Selenod Application',
-                    //   },
-                    // },
-                    // {
-                    //   name: '@electron-forge/maker-zip',
-                    //   platforms: ['darwin'],
-                    // },
-                    // {
-                    //   name: '@electron-forge/maker-deb',
-                    //   config: {},
-                    // },
-                    // {
-                    //   name: '@electron-forge/maker-rpm',
-                    //   config: {},
-                    // },
-                    {
-                      name: '@electron-forge/maker-dmg',
-                      config: {
-                        name: data.name,
-                        overwrite: true,
-                        // format: 'ULFO',
-                      },
-                    },
-                  ],
-                  plugins: [
-                    [
-                      '@electron-forge/plugin-webpack',
-                      {
-                        mainConfig: './webpack.main.config.js',
-                        renderer: {
-                          config: './webpack.renderer.config.js',
-                          entryPoints: [
-                            {
-                              html: './src/index.html',
-                              js: './src/renderer.js',
-                              name: 'main_window',
-                              preload: {
-                                js: './src/preload.js',
-                              },
-                            },
-                          ],
-                        },
-                      },
-                    ],
-                  ],
-                },
-              },
-              devDependencies: {
-                '@babel/core': '^7.19.0',
-                '@babel/preset-react': '^7.18.6',
-                '@electron-forge/cli': '^6.0.0-beta.66',
-                '@electron-forge/maker-deb': '^6.0.0-beta.66',
-                '@electron-forge/maker-rpm': '^6.0.0-beta.66',
-                '@electron-forge/maker-squirrel': '^6.0.0-beta.66',
-                '@electron-forge/maker-zip': '^6.0.0-beta.66',
-                '@electron-forge/maker-dmg': '^6.0.0-beta.66',
-                '@electron-forge/plugin-webpack': '^6.0.0-beta.66',
-                '@vercel/webpack-asset-relocator-loader': '^1.7.3',
-                'babel-loader': '^8.2.5',
-                'css-loader': '^6.7.1',
-                electron: '20.1.3',
-                'json-loader': '^0.5.7',
-                'node-loader': '^2.0.0',
-                'style-loader': '^3.3.1',
-              },
-              dependencies: {
-                '@electron/remote': '^2.0.8',
-                'electron-squirrel-startup': '^1.0.0',
-                'file-loader': '^6.2.0',
-                react: '^18.2.0',
-                'react-dom': '^18.2.0',
-                'react-router-dom': '^6.3.0',
-              },
-            }),
-            (err) => {
-              if (err) {
-                console.log(err);
-
-                return res.status(500).json({
-                  message: 'Fail to write package.json.',
-                });
-              }
-            }
-          );
-
-          shell.cd(`${__dirname}/application`);
-          shell.exec('rm -r out');
-          shell.exec('npm run make', () => {
-            res.download(
-              `${__dirname}/application/out/make/${data.name}.dmg`,
-              `${data.name}.dmg`
-            );
           });
         });
       });

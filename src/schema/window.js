@@ -21,6 +21,14 @@ const windowSchema = new Schema(
         type: Number,
         required: true,
       },
+      themeColor: {
+        type: String,
+        required: true,
+      },
+      route: {
+        type: String,
+        required: true,
+      },
     },
     scriptData: {
       type: mongoose.Schema.Types.ObjectId,
