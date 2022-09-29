@@ -57,9 +57,9 @@ app.get('*', (_, res) => {
   });
 });
 
-server.listen(process.env.PORT || 8080, () => {
+server.listen(process.env.PORT || 80, () => {
   console.log(
     'HTTP server listening on port ' +
-      (process.env.PORT === undefined ? 8080 : process.env.PORT)
+      (process.env.PORT === undefined ? 80 : process.env.PORT)
   );
 });
