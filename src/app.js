@@ -1,3 +1,4 @@
+import https from 'https';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -7,8 +8,14 @@ import bodyParser from 'body-parser';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import queue from 'express-queue';
+import fs from 'fs';
 
 export const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const options = {
+  key: fs.readFileSync(__dirname + '/keys/private.pem'),
+  cert: fs.readFileSync(__dirname + '/keys/public.pem'),
+};
 
 // express.js Init
 const app = express();
@@ -47,6 +54,8 @@ db.once('open', () => {
 
 mongoose.connect(dburl);
 
+const server = https.createServer(options, app);
+
 app.get('*', (_, res) => {
   res.status(404).json({
     status: 404,
@@ -54,6 +63,10 @@ app.get('*', (_, res) => {
   });
 });
 
-app.listen(process.env.PORT || 8080, () => {
-  console.log('Server is running at port 8080');
+server.listen(process.env.PORT || 8080, () => {
+  console.log(
+    'HTTPS server listening on port ' + process.env.PORT === undefined
+      ? process.env.PORT
+      : 8080
+  );
 });

@@ -21,5 +21,3 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-src/application/src/data.json
-src/application/package.json
