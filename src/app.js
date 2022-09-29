@@ -8,14 +8,8 @@ import bodyParser from 'body-parser';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import queue from 'express-queue';
-import fs from 'fs';
 
 export const __dirname = dirname(fileURLToPath(import.meta.url));
-
-const options = {
-  key: fs.readFileSync(__dirname + '/keys/private.pem'),
-  cert: fs.readFileSync(__dirname + '/keys/public.pem'),
-};
 
 // express.js Init
 const app = express();
@@ -54,7 +48,7 @@ db.once('open', () => {
 
 mongoose.connect(dburl);
 
-const server = https.createServer(options, app);
+const server = https.createServer(app);
 
 app.get('*', (_, res) => {
   res.status(404).json({
@@ -65,8 +59,7 @@ app.get('*', (_, res) => {
 
 server.listen(process.env.PORT || 8080, () => {
   console.log(
-    'HTTPS server listening on port ' + process.env.PORT === undefined
-      ? process.env.PORT
-      : 8080
+    'HTTPS server listening on port ' +
+      (process.env.PORT === undefined ? 8080 : process.env.PORT)
   );
 });
