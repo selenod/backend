@@ -1,4 +1,3 @@
-import https from 'https';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -8,6 +7,7 @@ import bodyParser from 'body-parser';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import queue from 'express-queue';
+import http from 'http';
 
 export const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -48,7 +48,7 @@ db.once('open', () => {
 
 mongoose.connect(dburl);
 
-const server = https.createServer(app);
+const server = http.createServer(app);
 
 app.get('*', (_, res) => {
   res.status(404).json({
@@ -59,7 +59,7 @@ app.get('*', (_, res) => {
 
 server.listen(process.env.PORT || 8080, () => {
   console.log(
-    'HTTPS server listening on port ' +
+    'HTTP server listening on port ' +
       (process.env.PORT === undefined ? 8080 : process.env.PORT)
   );
 });
