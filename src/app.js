@@ -37,7 +37,9 @@ indexRouter(app);
 // db connection
 const db = mongoose.connection;
 
-db.on('error', console.error);
+db.on('error', () => {
+  console.log('An error occurred while connecting to the database.');
+});
 db.on('disconnected', () => {
   console.log('Disconnected from DB! Trying to reconnect');
   mongoose.connect(dburl);
