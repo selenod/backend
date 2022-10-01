@@ -35,20 +35,20 @@ import indexRouter from './routes/index.js';
 indexRouter(app);
 
 // db connection
-const db = mongoose.connection;
+// const db = mongoose.connection;
 
-db.on('error', () => {
-  console.log('An error occurred while connecting to the database.');
-});
-db.on('disconnected', () => {
-  console.log('Disconnected from DB! Trying to reconnect');
-  mongoose.connect(dburl);
-});
-db.once('open', () => {
-  console.log('Connected to mongo server');
-});
+// db.on('error', () => {
+//   console.log('An error occurred while connecting to the database.');
+// });
+// db.on('disconnected', () => {
+//   console.log('Disconnected from DB! Trying to reconnect');
+//   mongoose.connect(dburl);
+// });
+// db.once('open', () => {
+//   console.log('Connected to mongo server');
+// });
 
-mongoose.connect(dburl);
+// mongoose.connect(dburl);
 
 const server = http.createServer(app);
 
