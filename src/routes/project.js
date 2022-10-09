@@ -17,7 +17,7 @@ router.get('/', (_, res) => {
   });
 });
 
-// body: { name, uid }
+// body : { name, uid }
 router.post('/', async (req, res) => {
   if (req.body.name === undefined || req.body.uid === undefined) {
     return res.status(400).json({
@@ -156,6 +156,53 @@ router.get('/:uid/:id', async (req, res) => {
         });
       });
   });
+});
+
+// parameter : { route }
+router.get('/:route', async (req, res) => {
+  if (req.params.route === undefined) {
+    return res.status(400).json({
+      message: 'Bad Request.',
+    });
+  }
+
+  await Project.findOne({ route: '/' + req.params.route })
+    .populate([
+      {
+        path: 'windowList',
+        populate: {
+          path: 'elementData',
+          model: 'Element',
+        },
+      },
+      {
+        path: 'windowList',
+        populate: {
+          path: 'scriptData',
+          model: 'Script',
+        },
+      },
+    ])
+    .populate('assetList')
+    .populate('assetData')
+    .exec((err, data) => {
+      if (err || !data) {
+        return res.status(500).json({
+          message: 'Fail to load project.',
+        });
+      }
+
+      res.status(200).json({
+        project: {
+          name: data.name,
+          windowList: data.windowList,
+          assetList: data.assetList,
+          assetData: data.assetData,
+          assetLength: data.assetLength,
+          route: data.route,
+        },
+      });
+    });
 });
 
 // parameter : { uid, id }
