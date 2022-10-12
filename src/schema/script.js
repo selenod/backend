@@ -15,6 +15,9 @@ const scriptSchema = new Schema(
             name: {
               type: String,
             },
+            value: {
+              value: Schema.Types.Mixed,
+            },
             connection: {
               id: {
                 type: String,
