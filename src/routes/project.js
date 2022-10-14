@@ -1229,7 +1229,7 @@ router.put('/script', async (req, res) => {
 
             Project.updateOne(
               {
-                _id: req.params.id,
+                _id: req.body.id,
               },
               {
                 modifiedAt: new Date(),
