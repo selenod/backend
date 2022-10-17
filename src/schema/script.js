@@ -10,23 +10,8 @@ const scriptSchema = new Schema(
         nodeId: {
           type: String,
         },
-        inputConnections: [
-          {
-            name: {
-              type: String,
-            },
-            value: {
-              value: Schema.Types.Mixed,
-            },
-            connection: {
-              id: {
-                type: String,
-              },
-              pinType: Number,
-              name: String,
-            },
-          },
-        ],
+        inputConnections: Schema.Types.Mixed,
+        outputFlowConnection: Schema.Types.Mixed,
         position: {
           x: {
             type: Number,
