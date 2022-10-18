@@ -62,6 +62,7 @@ const elementSchema = new Schema(
   },
   {
     versionKey: false,
+    minimize: false,
   }
 );
 

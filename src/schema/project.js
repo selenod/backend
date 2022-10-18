@@ -47,6 +47,7 @@ const projectSchema = new Schema(
   },
   {
     versionKey: false,
+    minimize: false,
   }
 );
 

@@ -43,6 +43,7 @@ const windowSchema = new Schema(
   },
   {
     versionKey: false,
+    minimize: false,
   }
 );
 

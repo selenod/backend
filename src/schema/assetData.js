@@ -21,6 +21,7 @@ const assetDataSchema = new Schema(
   },
   {
     versionKey: false,
+    minimize: false,
   }
 );
 

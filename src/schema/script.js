@@ -6,28 +6,12 @@ const scriptSchema = new Schema(
   {
     data: {
       type: Map,
-      of: {
-        nodeId: {
-          type: String,
-        },
-        inputConnections: Schema.Types.Mixed,
-        outputFlowConnection: Schema.Types.Mixed,
-        position: {
-          x: {
-            type: Number,
-          },
-          y: {
-            type: Number,
-          },
-        },
-        zIndex: {
-          type: Number,
-        },
-      },
+      of: Schema.Types.Mixed,
     },
   },
   {
     versionKey: false,
+    minimize: false,
   }
 );
 

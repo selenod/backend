@@ -11,6 +11,7 @@ const assetListSchema = new Schema(
   },
   {
     versionKey: false,
+    minimize: false,
   }
 );
 
