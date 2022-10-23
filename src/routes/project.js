@@ -35,6 +35,10 @@ router.post('/', async (req, res) => {
     Script.create(
       {
         data: {},
+        variable: {
+          functions: [],
+          variables: [],
+        },
       },
       (err, scriptData) => {
         if (err || !scriptData) {
@@ -330,6 +334,10 @@ router.post('/window', async (req, res) => {
         Script.create(
           {
             data: {},
+            variable: {
+              functions: [],
+              variables: [],
+            },
           },
           (err, scriptData) => {
             if (err || !scriptData) {
@@ -864,6 +872,7 @@ router.post('/element', async (req, res) => {
                     ? 0
                     : data.elementData[data.elementData.length - 1].id + 1,
                 type: req.body.type,
+                isShown: true,
                 x: '0',
                 y: '0',
                 xAlign: 0,
@@ -1172,13 +1181,14 @@ router.delete('/element/:uid/:id/:windowId/:index', async (req, res) => {
   });
 });
 
-// body : { uid, id, windowId, scriptData }
+// body : { uid, id, windowId, scriptData, varData }
 router.put('/script', async (req, res) => {
   if (
     req.body.uid === undefined ||
     req.body.id === undefined ||
     req.body.windowId === undefined ||
-    req.body.scriptData === undefined
+    req.body.scriptData === undefined ||
+    req.body.varData === undefined
   ) {
     return res.status(400).json({
       message: 'Bad Request.',
@@ -1219,6 +1229,7 @@ router.put('/script', async (req, res) => {
             },
             {
               data: req.body.scriptData,
+              variable: req.body.varData,
             }
           ).exec((err) => {
             if (err) {

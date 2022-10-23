@@ -8,6 +8,7 @@ const scriptSchema = new Schema(
       type: Map,
       of: Schema.Types.Mixed,
     },
+    variable: Schema.Types.Mixed,
   },
   {
     versionKey: false,

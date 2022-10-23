@@ -16,7 +16,10 @@ const elementSchema = new Schema(
       type: String,
       required: true,
     },
-
+    isShown: {
+      type: Boolean,
+      required: true,
+    },
     // Position
     x: {
       type: String,
