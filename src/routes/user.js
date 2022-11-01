@@ -26,7 +26,7 @@ router.get('/auth', async (req, res) => {
     case 'kakao':
       await axios
         .post(
-          `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&redirect_uri=http://localhost:3001/redirect/kakao&code=${req.query.code}&client_id=${kakaoRestAPIKey}`,
+          `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&redirect_uri=https://selenod.com/redirect/kakao&code=${req.query.code}&client_id=${kakaoRestAPIKey}`,
           {
             headers: {
               'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
@@ -43,7 +43,7 @@ router.get('/auth', async (req, res) => {
             .then((data) => {
               if (!data.data) {
                 return res.status(500).json({
-                  message: 'Failed to load user data.',
+                  message: 'Failed to  ad user data.',
                 });
               }
 
@@ -81,12 +81,9 @@ router.post('/login', async (req, res) => {
   }
 
   if (
-    (await User.findOne({
-      username: req.body.username,
-    })) ||
-    (await User.findOne({
+    await User.findOne({
       uid: req.body.uid,
-    }))
+    })
   ) {
     await User.findOne({
       username: req.body.username,
