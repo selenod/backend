@@ -15,7 +15,7 @@ export const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 
 // setup express-queue
-const buildQueue = queue({
+const queue = queue({
   activeLimit: 1,
   queuedLimit: -1,
 });
@@ -28,7 +28,7 @@ app.use(express.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(buildQueue);
+app.use(queue);
 
 // express.js routes
 import indexRouter from './routes/index.js';
